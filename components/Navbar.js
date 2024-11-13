@@ -77,7 +77,7 @@ const Navbar = () => {
     return (
         <nav className='fixed w-full z-10 bg-white shadow-sm shadow-gray-400 flex justify-between items-center px-6 py-5 font-poppins h-12'>
             <div>
-                <h1 className='font-bold text-sm sm:text-md md:text-lg text-blue-600'>NDC</h1>
+                <h1 className='font-bold text-sm sm:text-md md:text-lg text-blue-600'>NDC SCORECARD</h1>
             </div>
 
             <div className='flex gap-4 items-center'>   
@@ -96,10 +96,10 @@ const Navbar = () => {
                         Purpose
                     </button>
                     <button 
-                        onClick={() => scrollToSection('benefits')}
-                        className={`navlinks ${activeSection === 'benefits' ? "text-blue-600" : ""}`}
+                        onClick={() => scrollToSection('testimonials')}
+                        className={`navlinks ${activeSection === 'testimonials' ? "text-blue-600" : ""}`}
                     >
-                        Benefits
+                        Testimonials
                     </button>
                 </div>
 
@@ -141,10 +141,10 @@ const Navbar = () => {
                             Purpose
                         </button>
                         <button
-                            onClick={() => scrollToSection('benefits')}
-                            className={`navlinks ${activeSection === 'benefits' ? "text-blue-600" : ""}`}
+                            onClick={() => scrollToSection('testimonials')}
+                            className={`navlinks ${activeSection === 'testimonials' ? "text-blue-600" : ""}`}
                         >
-                            Benefits
+                            Testimonials
                         </button>
                     </div>
                 </div>

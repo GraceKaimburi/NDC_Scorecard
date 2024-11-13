@@ -94,45 +94,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="px-4 py-12">
-        <h1 id="benefits" className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-12">
-          Benefits
-        </h1>
-        <div className="bg-white max-w-7xl mx-auto">
-          {/* Data Insights */}
-          <div className="mb-16">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                Data Insights
-              </h2>
-              <p className="text-lg text-gray-600">
-                Access comprehensive analytics and visualizations that transform complex climate data into actionable insights. Our platform enables informed decision-making through detailed analysis of NDC implementations, progress tracking, and impact assessment.
-              </p>
-            </div>
-          </div>
-
-          {/* Capacity Building Support */}
-          <div className="mb-16">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                Capacity Building Support
-              </h2>
-              <p className="text-lg text-gray-600">
-                Enhance your team&apo;s capability to implement and monitor climate actions effectively. Our platform provides resources, training materials, and best practices to strengthen institutional capacity for NDC implementation and reporting.
-              </p>
-            </div>
-          </div>
-
-          {/* User Testimonials */}
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
-              User Testimonials
-            </h2>
-            <TestimonialCarousel />
-          </div>
-        </div>
-      </section>
+     
+      {/* User Testimonials */}
+      <div id='testimonials'>
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
+          User Testimonials
+        </h2>
+        <TestimonialCarousel />
+      </div>
 
 
       {/* CTA Banner */}
