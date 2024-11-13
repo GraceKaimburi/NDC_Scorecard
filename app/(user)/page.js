@@ -9,19 +9,19 @@ export default function Home() {
     {
       title: "What are NDCs?",
       description: "Nationally Determined Contributions (NDCs) are climate action plans by countries under the Paris Agreement, detailing targets to reduce emissions and adapt to climate change. They are updated periodically to increase ambition and track global progress toward climate goals.",
-      imagePath: "/images/block1.jpg",
+      imagePath: "/images/whatndc.jpg",
       alt: "Rocket illustration"
     },
     {
       title: "Role in Climatic action",
       description: "NDCs drive global climate action by setting national targets for reducing emissions and adapting to climate impacts, fostering accountability, and encouraging collective progress toward limiting global warming.",
-      imagePath: "/images/block1.jpg",
+      imagePath: "/images/role.jpg",
       alt: "Trophy illustration"
     },
     {
       title: "NDCs and Paris Agreement",
       description: "NDCs are climate plans submitted by countries under the Paris Agreement, detailing emissions reduction and adaptation targets to limit global warming to 1.5–2°C. Updated every five years, they form a core part of the Agreement's approach, fostering global accountability and climate action.",
-      imagePath: "/images/block1.jpg",
+      imagePath: "/images/agreement.jpg",
       alt: "Innovation illustration"
     }
   ];
@@ -29,7 +29,7 @@ export default function Home() {
     {
       title: "How NPCs Scorecard Helps You",
       description: "The NPC scorecard helps you by providing a clear, accessible overview of each country's climate action progress. It tracks and evaluates commitments in emissions reduction, adaptation, and resilience-building, highlighting gaps and achievements. This transparency enables governments, stakeholders, and the public to monitor accountability, compare efforts, and identify areas for improvement or collaboration.",
-      imagePath: "/images/block1.jpg",
+      imagePath: "/images/help.jpg",
       alt: "Rocket illustration"
     },
     {
@@ -44,13 +44,13 @@ export default function Home() {
           </ol>
         </div>
       ),
-      imagePath: "/images/block1.jpg",
+      imagePath: "/images/functions.jpg",
       alt: "Trophy illustration"
     },
     {
       title: "Identify Gaps and Track Progress",
       description: "The NPC scorecard helps users see gaps between climate goals and actions, tracking each country’s progress to highlight areas needing improvement and foster accountability.",
-      imagePath: "/images/block1.jpg",
+      imagePath: "/images/progress.jpg",
       alt: "Innovation illustration"
     }
   ];
