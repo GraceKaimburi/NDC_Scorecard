@@ -1,29 +1,40 @@
+'use client'
 import React from 'react';
-import { FiDownload } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 
 const HeroSection = () => {
+  const scrollToContent = () => {
+    // Calculate scroll position to be just past the hero section
+    const viewportHeight = window.innerHeight * 0.7; // 70vh of viewport
+    const scrollOffset = Math.max(viewportHeight, 400); // minimum 400px scroll
+
+    window.scrollTo({
+      top: scrollOffset,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] bg-gray-50 px-4 py-20">
       <div className="max-w-4xl mx-auto text-center space-y-8">
         {/* Main heading with two-tone effect */}
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-          The modern landing page for{' '}
-          <span className="block mt-2 text-blue-500">
-            React developers
-          </span>
+        Your Guide to Climate Progress and Accountability
         </h1>
 
         {/* Subtitle */}
         <p className="text-xl md:text-2xl text-gray-600">
-          The easiest way to build a React landing page in seconds.
+        Track global climate commitments and see where improvements are needed, all in one place.
         </p>
 
-        {/* CTA Button */}
+        {/* Scroll Down Button */}
         <button 
-          className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-200 space-x-2"
+          onClick={scrollToContent}
+          className="inline-flex flex-col items-center text-gray-600 hover:text-blue-500 transition-colors duration-200 animate-bounce"
+          aria-label="Scroll down"
         >
-          <FiDownload className="w-5 h-5" />
-          <span>Download Your Free Theme</span>
+          <span className="text-sm mb-2">Scroll Down</span>
+          <FiChevronDown className="w-8 h-8" />
         </button>
       </div>
     </div>

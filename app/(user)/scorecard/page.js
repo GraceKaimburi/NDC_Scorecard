@@ -1,178 +1,285 @@
 'use client'
 import React, { useState } from 'react';
 import { 
-  FiAlertCircle, 
-  FiCheckCircle, 
-  FiSave, 
-  FiArrowRight,
-  FiInfo
+  FiInfo, 
+  FiCheck,
+  FiAlertCircle,
+  FiSave,
+  FiClipboard,
+  FiBook,
+  FiSend,
+  FiLoader
 } from 'react-icons/fi';
 
-const NDCScorecard = () => {
+const NDCScorecardSystem = () => {
+  const [activeTab, setActiveTab] = useState('completion');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    adaptation: 0,
-    mitigation: 0,
-    implementation: 0,
-    comments: ''
+    questionTitle: '',
+    feedback: '',
+    isAnonymous: false,
+    description: '',
+    basicInput: ''
   });
+  const [submitted, setSubmitted] = useState(false);
   
-  const [showSaveReminder, setShowSaveReminder] = useState(false);
-  const [savedProgress, setSavedProgress] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setSubmitted(true);
+      setIsSubmitting(false);
+    } catch (error) {
+      setIsSubmitting(false);
+      // Handle error
+    }
+  };
 
-  // Reminder to save after 2 minutes
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSaveReminder(true);
-    }, 120000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleSliderChange = (field, value) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
-    setSavedProgress(false);
-  };
-
-  const handleSave = () => {
-    // Simulate saving data
-    setTimeout(() => {
-      setSavedProgress(true);
-      setShowSaveReminder(false);
-    }, 500);
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      {/* Header */}
-      <div className="border-b pb-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">NDC Scorecard Completion</h1>
-        <p className="text-gray-600 mt-2">
-          Please evaluate the following climate action criteria
-        </p>
-      </div>
-
-      {/* Main Form */}
-      <div className="space-y-8">
-        {/* Adaptation Strategy Section */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <label className="block mb-4">
-            <span className="text-gray-700 font-medium">
-              Adaptation Strategy Effectiveness
-            </span>
-            <div className="flex items-center mt-2">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={formData.adaptation}
-                onChange={(e) => handleSliderChange('adaptation', e.target.value)}
-                className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
-              />
-              <span className="ml-4 w-12 text-gray-600">
-                {formData.adaptation}%
-              </span>
-            </div>
-          </label>
-        </div>
-
-        {/* Mitigation Measures Section */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <label className="block mb-4">
-            <span className="text-gray-700 font-medium">
-              Mitigation Measures Impact
-            </span>
-            <div className="flex items-center mt-2">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={formData.mitigation}
-                onChange={(e) => handleSliderChange('mitigation', e.target.value)}
-                className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
-              />
-              <span className="ml-4 w-12 text-gray-600">
-                {formData.mitigation}%
-              </span>
-            </div>
-          </label>
-        </div>
-
-        {/* Implementation Progress Section */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <label className="block mb-4">
-            <span className="text-gray-700 font-medium">
-              Implementation Progress
-            </span>
-            <div className="flex items-center mt-2">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={formData.implementation}
-                onChange={(e) => handleSliderChange('implementation', e.target.value)}
-                className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
-              />
-              <span className="ml-4 w-12 text-gray-600">
-                {formData.implementation}%
-              </span>
-            </div>
-          </label>
-        </div>
-
-        {/* Comments Section */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <label className="block">
-            <span className="text-gray-700 font-medium">Additional Comments</span>
-            <textarea
-              className="mt-2 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-              rows="3"
-              value={formData.comments}
-              onChange={(e) => handleSliderChange('comments', e.target.value)}
-              placeholder="Add any notes or comments here..."
-            />
-          </label>
+    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto bg-gray-50 min-h-screen">
+      {/* Tab Navigation */}
+      <div className="bg-teal-500 p-4">
+        <div className="flex space-x-2">
+          <button
+            type="button"
+            onClick={() => setActiveTab('completion')}
+            className={`px-4 py-2 rounded-t-lg flex items-center ${
+              activeTab === 'completion' ? 'bg-white text-teal-600' : 'bg-teal-600 text-white'
+            }`}
+          >
+            <FiBook className="mr-2" />
+            Scorecard Completion
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('questions')}
+            className={`px-4 py-2 rounded-t-lg flex items-center ${
+              activeTab === 'questions' ? 'bg-white text-teal-600' : 'bg-teal-600 text-white'
+            }`}
+          >
+            <FiClipboard className="mr-2" />
+            Sample Question Set
+          </button>
         </div>
       </div>
 
-      {/* Save Reminder Popup */}
-      {showSaveReminder && (
-        <div className="fixed bottom-4 right-4 bg-yellow-50 border border-yellow-200 p-4 rounded-lg shadow-lg flex items-center">
-          <FiAlertCircle className="text-yellow-500 mr-2" />
-          <span className="text-sm text-yellow-700">
-            Don't forget to save your progress!
-          </span>
+      {/* Content Area */}
+      <div className="p-6">
+        {activeTab === 'completion' ? (
+          // ... (Previous Scorecard Completion content remains the same)
+          <div className="space-y-6">
+            {/* Data Entry Instructions */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-800">
+                <FiInfo className="mr-2 text-teal-500" />
+                Data Entry Instructions
+              </h2>
+              <div className="text-gray-600 space-y-3">
+                <p>Please follow these instructions carefully when entering data:</p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Complete all required fields marked with an asterisk (*)</li>
+                  <li>Use appropriate units as specified in each field</li>
+                  <li>Double-check your entries before submission</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Follow Guidelines */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-800">
+                <FiCheck className="mr-2 text-teal-500" />
+                Follow Guidelines
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded">
+                  <h3 className="font-medium mb-2">Data Quality</h3>
+                  <ul className="text-sm text-gray-600 space-y-2">
+                    <li>• Ensure data accuracy</li>
+                    <li>• Provide complete information</li>
+                    <li>• Use consistent formats</li>
+                  </ul>
+                </div>
+                <div className="bg-gray-50 p-4 rounded">
+                  <h3 className="font-medium mb-2">Documentation</h3>
+                  <ul className="text-sm text-gray-600 space-y-2">
+                    <li>• Include relevant references</li>
+                    <li>• Document assumptions</li>
+                    <li>• Note any data gaps</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Validation and Saving Tips */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-800">
+                <FiAlertCircle className="mr-2 text-teal-500" />
+                Validation and Saving Tips
+              </h2>
+              <div className="space-y-4">
+                <div className="bg-blue-50 p-4 rounded">
+                  <p className="text-sm text-blue-800">
+                    Remember to save your progress regularly using the save button below
+                  </p>
+                </div>
+                <ul className="text-gray-600 space-y-2">
+                  <li className="flex items-start">
+                    <FiCheck className="mt-1 mr-2 text-green-500" />
+                    Review all entries before final submission
+                  </li>
+                  <li className="flex items-start">
+                    <FiCheck className="mt-1 mr-2 text-green-500" />
+                    Address any validation errors highlighted in red
+                  </li>
+                  <li className="flex items-start">
+                    <FiCheck className="mt-1 mr-2 text-green-500" />
+                    Save progress after completing each section
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Sample Question Set Screen with Form Submissions
+          <div className="space-y-6">
+            {/* Form Question */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">Form Question</h2>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="block text-gray-700">
+                    Question Title <span className="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    required
+                    className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                    placeholder="Enter your answer"
+                    value={formData.questionTitle}
+                    onChange={(e) => handleInputChange('questionTitle', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Feedback Form */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">Feedback Form</h2>
+              <div className="space-y-4">
+                <textarea 
+                  className="w-full p-3 border rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                  rows="4"
+                  placeholder="Provide your feedback here..."
+                  value={formData.feedback}
+                  onChange={(e) => handleInputChange('feedback', e.target.value)}
+                />
+                <div className="flex items-center space-x-2">
+                  <input 
+                    type="checkbox" 
+                    id="anonymous"
+                    checked={formData.isAnonymous}
+                    onChange={(e) => handleInputChange('isAnonymous', e.target.checked)}
+                  />
+                  <label htmlFor="anonymous">Submit anonymously</label>
+                </div>
+              </div>
+            </div>
+
+            {/* Form with Description */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-2">Form with Description</h2>
+              <p className="text-gray-600 mb-4">
+                Please provide detailed information about your climate action initiatives.
+              </p>
+              <div className="space-y-4">
+                <input 
+                  type="text" 
+                  className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                  placeholder="Enter details here"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Basic Form */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">Form</h2>
+              <div className="space-y-4">
+                <input 
+                  type="text" 
+                  className="w-full p-2 border rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                  placeholder="Basic input field"
+                  value={formData.basicInput}
+                  onChange={(e) => handleInputChange('basicInput', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Footer with Submit */}
+      <div className="border-t bg-gray-50 p-4 mt-6">
+        <div className="flex justify-between items-center">
+          <button
+            type="button"
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 flex items-center"
+            >
+              <FiSave className="mr-2" />
+              Save Progress
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center ${
+                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
+            >
+              {isSubmitting ? (
+                <>
+                  <FiLoader className="animate-spin mr-2" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <FiSend className="mr-2" />
+                  Submit
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Submission Success Message */}
+      {submitted && (
+        <div className="fixed bottom-4 right-4 bg-green-50 border border-green-200 p-4 rounded-lg shadow-lg">
+          <div className="flex items-center text-green-700">
+            <FiCheck className="mr-2" />
+            Form submitted successfully!
+          </div>
         </div>
       )}
-
-      {/* Action Buttons */}
-      <div className="mt-8 flex justify-between items-center">
-        <button
-          onClick={handleSave}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <FiSave className="mr-2" />
-          Save Progress
-        </button>
-        
-        <button
-          className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          Submit
-          <FiArrowRight className="ml-2" />
-        </button>
-      </div>
-
-      {/* Save Confirmation */}
-      {savedProgress && (
-        <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-lg flex items-center">
-          <FiCheckCircle className="mr-2" />
-          Progress saved successfully!
-        </div>
-      )}
-    </div>
+    </form>
   );
 };
 
-export default NDCScorecard;
+export default NDCScorecardSystem;
