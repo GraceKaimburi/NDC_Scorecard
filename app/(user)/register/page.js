@@ -270,11 +270,12 @@ const Registration = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex justify-between">
+        {/* Progress Steps - Redesigned for better responsiveness */}
+        <div className="mb-8 overflow-hidden">
+          {/* Desktop Version - Hidden on mobile */}
+          <div className="hidden sm:flex justify-between">
             {steps.map((step, index) => (
-              <div key={step.title} className="flex-1">
+              <div key={`desktop-${step.title}`} className="flex-1">
                 <div className="flex items-center">
                   <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${
                     currentStep > index + 1 ? 'bg-green-500' :
@@ -296,6 +297,34 @@ const Registration = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Mobile Version - Shown only on mobile */}
+          <div className="sm:hidden">
+            <div className="flex items-center justify-center space-x-4">
+              {steps.map((step, index) => (
+                <div key={`mobile-${step.title}`} className="flex flex-col items-center">
+                  <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                    currentStep > index + 1 ? 'bg-green-500' :
+                    currentStep === index + 1 ? 'bg-blue-500' : 'bg-gray-300'
+                  } text-white`}>
+                    {currentStep > index + 1 ? (
+                      <BsCheckCircleFill className="w-5 h-5" />
+                    ) : (
+                      index + 1
+                    )}
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className="w-12 h-0.5 bg-gray-200 -mx-2 hidden"></div>
+                  )}
+                </div>
+              ))}
+            </div>
+            {/* Current step title for mobile */}
+            <div className="text-center mt-2">
+              <p className="text-sm font-medium">{steps[currentStep - 1].title}</p>
+              <p className="text-xs text-gray-500">{steps[currentStep - 1].description}</p>
+            </div>
           </div>
         </div>
 
