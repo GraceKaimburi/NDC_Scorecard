@@ -6,9 +6,15 @@ import { AiOutlineInfoCircle, AiOutlineExclamationCircle } from 'react-icons/ai'
 const Registration = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [otpSent, setOtpSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
+    country_name: '',
+    // Additional fields for UI purposes
     otp: '',
     organization: '',
     orgType: '',
@@ -35,12 +41,96 @@ const Registration = () => {
     setOtpSent(true);
   };
 
+
+  const handleRegistration = async () => {
+    try {
+      setIsLoading(true);
+      setError('');
+
+      // Prepare the payload according to API schema
+      const payload = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        password: formData.password,
+        country_name: formData.country_name
+      };
+
+      const response = await fetch('https://ndcbackend.agnesafrica.org  /auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      // Handle successful registration
+      // The API returns id, user_role, refresh_token, and access_token
+      // You might want to store these in your auth context or state management
+      console.log('Registration successful:', data);
+      
+      // Here you could redirect to login or dashboard
+      // router.push('/dashboard');
+
+    } catch (err) {
+      setError(err.message || 'Failed to register. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   const renderAccountCreation = () => (
     <div className="space-y-8">
       {/* Account Setup Steps */}
       <section className="space-y-4">
         <h3 className="text-xl font-semibold text-gray-900">Account Setup Steps</h3>
         <div className="space-y-6">
+          {/* First Name */}
+          <div>
+            <label className="block text-sm font-medium mb-1">First Name</label>
+            <input 
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your first name"
+              value={formData.first_name}
+              onChange={e => setFormData({...formData, first_name: e.target.value})}
+              maxLength={255}
+            />
+          </div>
+
+          {/* Last Name */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Last Name</label>
+            <input 
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your last name"
+              value={formData.last_name}
+              onChange={e => setFormData({...formData, last_name: e.target.value})}
+              maxLength={255}
+            />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Country</label>
+            <input 
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your country"
+              value={formData.country_name}
+              onChange={e => setFormData({...formData, country_name: e.target.value})}
+              maxLength={255}
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Email Address</label>
             <div className="flex gap-2">
@@ -50,6 +140,7 @@ const Registration = () => {
                 placeholder="Enter your corporate email"
                 value={formData.email}
                 onChange={e => setFormData({...formData, email: e.target.value})}
+                maxLength={255}
               />
               <button 
                 onClick={handleSendOTP}
@@ -87,6 +178,8 @@ const Registration = () => {
               placeholder="Create a secure password"
               value={formData.password}
               onChange={e => setFormData({...formData, password: e.target.value})}
+              minLength={6}
+              maxLength={69}
             />
           </div>
         </div>
@@ -256,11 +349,24 @@ const Registration = () => {
   );
 
   const handleNext = () => {
-    if (currentStep === 1 && !formData.otp) {
-      alert("Please verify your email first");
-      return;
+    if (currentStep === 1) {
+      // Validate required fields for first step
+      if (!formData.first_name || !formData.last_name || !formData.email || !formData.password || !formData.country_name) {
+        setError('Please fill in all required fields');
+        return;
+      }
+      if (!formData.otp) {
+        setError('Please verify your email first');
+        return;
+      }
     }
-    setCurrentStep(prev => Math.min(prev + 1, 3));
+    
+    if (currentStep === 3) {
+      // Handle final registration
+      handleRegistration();
+    } else {
+      setCurrentStep(prev => Math.min(prev + 1, 3));
+    }
   };
 
   const handleBack = () => {
@@ -333,6 +439,12 @@ const Registration = () => {
           <div className="p-6">
             <h2 className="text-2xl font-semibold mb-6">{steps[currentStep - 1].title}</h2>
             
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 rounded-md">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+            
             {currentStep === 1 && renderAccountCreation()}
             {currentStep === 2 && renderProfileCustomization()}
             {currentStep === 3 && renderDataPrivacy()}
@@ -340,9 +452,9 @@ const Registration = () => {
             <div className="flex justify-between mt-8">
               <button
                 onClick={handleBack}
-                disabled={currentStep === 1}
+                disabled={currentStep === 1 || isLoading}
                 className={`px-4 py-2 rounded-md border border-gray-300 ${
-                  currentStep === 1 
+                  currentStep === 1 || isLoading
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
@@ -351,14 +463,14 @@ const Registration = () => {
               </button>
               <button
                 onClick={handleNext}
-                disabled={currentStep === 3 && !formData.dataConsent}
+                disabled={isLoading || (currentStep === 3 && !formData.dataConsent)}
                 className={`px-4 py-2 rounded-md text-white ${
-                  currentStep === 3 && !formData.dataConsent 
+                  isLoading || (currentStep === 3 && !formData.dataConsent)
                     ? 'bg-gray-400 cursor-not-allowed' 
                     : 'bg-blue-500 hover:bg-blue-600'
                 }`}
               >
-                {currentStep === 3 ? 'Complete Registration' : 'Next'}
+                {isLoading ? 'Processing...' : currentStep === 3 ? 'Complete Registration' : 'Next'}
               </button>
             </div>
           </div>
