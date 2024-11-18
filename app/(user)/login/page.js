@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -11,8 +10,6 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [token, setToken] = useState(""); // Store token from initial login
-
-  const router = useRouter(); // Initialize router
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,7 +26,7 @@ const LoginForm = () => {
       });
 
       const data = await res.json();
-
+      
       if (res.ok) {
         setToken(data.token || ""); // Store token if provided
         setShowOtpInput(true);
@@ -60,11 +57,10 @@ const LoginForm = () => {
       });
 
       const data = await res.json();
-
+      
       if (res.ok) {
         setResponseMessage("Login successful! Redirecting...");
-        // Redirect to the dashboard
-        router.push("/dashboard"); // Ensure this matches your actual dashboard route
+        // Handle successful verification (e.g., redirect or store final token)
       } else {
         setResponseMessage(data.error || "OTP verification failed.");
       }
@@ -79,7 +75,7 @@ const LoginForm = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
-
+        
         {!showOtpInput ? (
           // Initial Login Form
           <form onSubmit={handleLogin}>
@@ -122,20 +118,6 @@ const LoginForm = () => {
         ) : (
           // OTP Verification Form
           <form onSubmit={handleOtpVerification}>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-lg text-gray-700 bg-gray-50 focus:ring focus:ring-blue-300"
-                placeholder="Enter your email"
-              />
-            </div>
             <div className="mb-4">
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">
                 Enter OTP
