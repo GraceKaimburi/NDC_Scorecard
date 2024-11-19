@@ -126,7 +126,21 @@ const LoginForm = () => {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleOtpVerification}>
+              <form onSubmit={handleOtpVerification}>
+            <div className="mb-4">
+      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+        Email
+      </label>
+      <input
+        type="email"
+        id="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="w-full px-3 py-2 border rounded-lg text-gray-700 bg-gray-50 focus:ring focus:ring-blue-300"
+        placeholder="Enter your email"
+      />
+    </div>
             <div className="mb-4">
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">
                 Enter OTP
