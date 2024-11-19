@@ -138,7 +138,7 @@ const Register = () => {
 
     try {
       // Reuse the registration endpoint to trigger a new OTP
-      const response = await fetch('https://2eed-41-80-117-113.ngrok-free.app/auth/register/', {
+      const response = await fetch('https://ndcbackend.agnesafrica.org/auth/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
