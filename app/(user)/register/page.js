@@ -51,7 +51,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://ndcbackend.agnesafrica.org/auth/register/', {
+      const response = await fetch('https://2eed-41-80-117-113.ngrok-free.app/auth/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const Register = () => {
   
     const verificationData = {
       email: formData.email,
-      otp_code: otp
+      otp: otp
     };
   
     console.log('Sending verification data:', verificationData); // Add this log
@@ -138,7 +138,7 @@ const Register = () => {
 
     try {
       // Reuse the registration endpoint to trigger a new OTP
-      const response = await fetch('https://ndcbackend.agnesafrica.org/auth/register/', {
+      const response = await fetch('https://2eed-41-80-117-113.ngrok-free.app/auth/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -279,6 +279,17 @@ const Register = () => {
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="flex flex-col space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-gray-600 mb-1">Email:</label>
+              <input
+                type="email"
+                id="email"
+                value={formData.email} // Prefill with the provided email
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })} // Allow editing if required
+                className="w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                readOnly // Make it read-only if editing isn't required
+              />
+            </div>
             <div>
               <label htmlFor="otp" className="block text-gray-600 mb-1">Enter OTP sent to your email:</label>
               <input
