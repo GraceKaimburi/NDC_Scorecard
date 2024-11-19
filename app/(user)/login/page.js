@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -10,9 +10,9 @@ const LoginForm = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
-  const [token, setToken] = useState(""); // Store token from initial login
+  const [token, setToken] = useState("");
 
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,11 +31,17 @@ const LoginForm = () => {
       const data = await res.json();
 
       if (res.ok) {
-        setToken(data.token || ""); // Store token if provided
+        setToken(data.token || "");
         setShowOtpInput(true);
         setResponseMessage("Please enter the OTP sent to your email.");
+      } else if (res.status === 401) {
+        // Handle 401 Unauthorized explicitly
+        setResponseMessage("Invalid email or password. Please try again.");
+      } else if (res.status === 404) {
+        // Handle account not found
+        setResponseMessage("No account found with this email. Please create an account.");
       } else {
-        setResponseMessage(data.error || "Login failed.");
+        setResponseMessage(data.message || "Login failed. Please try again later.");
       }
     } catch (error) {
       setResponseMessage("An error occurred. Please try again.");
@@ -54,7 +60,7 @@ const LoginForm = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Include token if required by API
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({ email, otp }),
       });
@@ -63,10 +69,11 @@ const LoginForm = () => {
 
       if (res.ok) {
         setResponseMessage("Login successful! Redirecting...");
-        // Redirect to the dashboard
-        router.push("/dashboard"); // Ensure this matches your actual dashboard route
+        router.push("/dashboard");
+      } else if (res.status === 400 && data.message === "Invalid OTP.") {
+        setResponseMessage("Invalid OTP. Please try again.");
       } else {
-        setResponseMessage(data.error || "OTP verification failed.");
+        setResponseMessage(data.message || "OTP verification failed.");
       }
     } catch (error) {
       setResponseMessage("An error occurred during OTP verification.");
@@ -81,7 +88,6 @@ const LoginForm = () => {
         <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
 
         {!showOtpInput ? (
-          // Initial Login Form
           <form onSubmit={handleLogin}>
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -120,22 +126,7 @@ const LoginForm = () => {
             </button>
           </form>
         ) : (
-          // OTP Verification Form
           <form onSubmit={handleOtpVerification}>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-lg text-gray-700 bg-gray-50 focus:ring focus:ring-blue-300"
-                placeholder="Enter your email"
-              />
-            </div>
             <div className="mb-4">
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">
                 Enter OTP
