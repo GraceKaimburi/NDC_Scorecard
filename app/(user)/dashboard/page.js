@@ -99,17 +99,17 @@ const Dashboard = () => {
 
   // Implementation and Development data states
   const [implementationData, setImplementationData] = useState({
-    finance: 'Poor',
-    technical: 'Poor',
-    governance: 'Poor',
-    monitoring: 'Poor'
+    finance: 'No data',
+    technical: 'No data',
+    governance: 'No data',
+    monitoring: 'No data'
   });
 
   const [developmentData, setDevelopmentData] = useState({
-    finance: 'Poor',
-    technical: 'Poor',
-    governance: 'Poor',
-    monitoring: 'Poor'
+    finance: 'No data',
+    technical: 'No data',
+    governance: 'No data',
+    monitoring: 'No data'
   });
 
   // Fetch scorecard data from API
