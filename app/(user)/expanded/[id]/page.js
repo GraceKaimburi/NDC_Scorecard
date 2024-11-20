@@ -40,8 +40,8 @@ const carouselData = [
       }
     },
     {
-      id: 'benefits',
-      title: "What are NDCs?",
+      id: 'tool-purpose',
+      title: "How the Tool Helps You",
       description: "Nationally Determined Contributions (NDCs) are country-driven climate action plans. They outline national goals to reduce emissions and adapt to climate change as part of the Paris Agreement.",
       expandedContent: {
         title: "How the Tool Helps You",
@@ -68,8 +68,8 @@ const carouselData = [
             ],
 
             link: {
-              url: "https://www.wri.org/ndcs",
-              text: "Get more insights from World Resources Institute"
+              url: "https://unfccc.int/",
+              text: "Related Sources"
             }
           },
         ]
@@ -78,33 +78,31 @@ const carouselData = [
     
     
     {
-      id: 'tool-purpose',
-      title: "How the Tool Helps You",
+      id: 'benefits',
+      title: "Tool Purpose",
       description: "Nationally Determined Contributions (NDCs) are country-driven climate action plans. They outline national goals to reduce emissions and adapt to climate change as part of the Paris Agreement.",
       expandedContent: {
-        title: "How this Tool Helps You",
+        title: "Tool Purpose",
         sections: [
           {
             title: "NDC Capacity Scorecard",
-            content: "The NDC Capacity Scorecard transforms climate data into actionable insights, supporting countries in the effective development and implementation of their NDCs. This tool empowers stakeholders with resources and analytics to track progress, build capacity, and inform climate policies.",
+            content: "The NDC Capacity Scorecard is a groundbreaking tool designed to assist stakeholders in achieving the development and implementation of Nationally Determined Contributions  NDCs). It simplifies the complex process of climate action by providing a centralized platform for tracking progress, identifying challenges, and accessing vital resources to enhance implementation efforts.",
           },
           {
-            title: "Transforming Climate Data Into Actionable Insights",
-            content: "Gain access to comprehensive climate datasets, visual analytics, and tailored metrics. These features simplify interpreting trends, evaluating resource allocation, and identifying gaps in NDC implementation, ensuring decisions are data-driven and impactful.",
+            title: "Empowering Stakeholders Through Innovative Tools",
+            content: "This tool supports governments, organizations, and individuals by simplifying the tracking of NDC implementation progress. It highlights key gaps and opportunities for improvement, promotes data accessibility, and fosters user engagement for impactful climate action.",
           },
           {
-            title: "Capacity-Building Support",
-            content: "The tool offers training modules, collaborative platforms, and technical assistance to support institutional and local capacities for NDC-related work. Users can share resources and knowledge to align their efforts with climate action priorities.",
-          },
-          {
-            title: "Key Features for Stakeholders",
+            title: "Key Tool Functionalities ",
             content: [
-              "Real-Time Progress Tracking: Access up-to-date reports on sectoral climate action efforts.",
-              "Highlight Gaps and Opportunities: Use visual dashboards to identify focus areas for policy or funding adjustments.",
-              "Capacity-Building Resources: Equip teams with tools and guidance for effective NDC implementation.",
-              "By empowering stakeholders with real-time data and advanced visualization tools, the NDC Capacity Scorecard ensures measurable progress toward sustainable development "
+              "Monitoring Progress: Interactive dashboards for tracking NDC development and sectoral achievements.",
+              "Identifying Gaps: Pinpoint areas requiring immediate attention in capacity, technology, and finance.",
+              "Data Accessibility: Integrates local and global datasets for a comprehensive overview of climate action.",
+              "Actionable Insights: Provides detailed analytics to align actions with national and global goals.",
+              "By empowering stakeholders with real-time data and advanced visualization tools, the NDC Capacity Scorecard ensures measurable progress toward sustainable development"
             ],
-
+          },
+          {
             link: {
               url: "https://www.wri.org/ndcs",
               text: "Get more insights from World Resources Institute"
