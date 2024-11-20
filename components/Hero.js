@@ -9,9 +9,9 @@ const HeroSection = () => {
   const [typingSpeed, setTypingSpeed] = useState(100);
 
   const phrases = [
-    'Climate Progress',
-    'Accountability',
-    'Positive Climate Action'
+    'tracking and monitoring the development of NDCs',
+    'assessing progress in the implementation of NDCs',
+    'enhancing capacity for NDC-related policies'
   ];
 
   useEffect(() => {

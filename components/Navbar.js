@@ -3,7 +3,6 @@ import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { MdMenuOpen, MdClose } from "react-icons/md";
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,10 +25,13 @@ const Navbar = () => {
         }
     };
 
-    const handleNavigation = (path, linkName) => {
-        router.push(path);
-        setActiveLink(linkName);
-        setIsOpen(false);
+    const scrollToOverview = () => {
+        const overviewElement = document.getElementById('overview');
+        if (overviewElement) {
+            overviewElement.scrollIntoView({ behavior: 'smooth' });
+            setActiveLink('overview');
+            setIsOpen(false);
+        }
     };
 
     useEffect(() => {
@@ -48,7 +50,7 @@ const Navbar = () => {
         <nav className='fixed w-full z-10 bg-white shadow-sm shadow-gray-400 flex justify-between items-center px-6 py-5 font-poppins h-12'>
             <div>
                 <h1 className='font-bold text-sm sm:text-md md:text-lg text-blue-600'>
-                    <Link href='/'>NDC CAPACITY SCORECARD</Link>
+                    NDC CAPACITY SCORECARD
                 </h1>
             </div>
 
@@ -56,16 +58,16 @@ const Navbar = () => {
                 {/* Large screen navlinks */}
                 <div className='hidden sm:flex gap-4'>
                     <button 
-                        onClick={() => handleNavigation('/', 'home')}
+                        onClick={() => router.push('/')}
                         className={`navlinks ${activeLink === 'home' ? "text-blue-600" : ""}`}
                     >
                         Home
                     </button>
                     <button 
-                        onClick={() => handleNavigation('/register', 'register')}
-                        className={`navlinks ${activeLink === 'register' ? "text-blue-600" : ""}`}
+                        onClick={scrollToOverview}
+                        className={`navlinks ${activeLink === 'overview' ? "text-blue-600" : ""}`}
                     >
-                        Get Started
+                        Overview
                     </button>
                 </div>
 
@@ -95,26 +97,26 @@ const Navbar = () => {
                         className="flex flex-col gap-2 w-[95%] bg-slate-50 py-2 items-center rounded-xl"
                     >
                         <button
-                            onClick={() => handleNavigation('/', 'home')}
+                            onClick={() => router.push('/')}
                             className={`navlinks ${activeLink === 'home' ? "text-blue-600" : ""}`}
                         >
                             Home
                         </button>
                         <button
-                            onClick={() => handleNavigation('/register', 'register')}
-                            className={`navlinks ${activeLink === 'register' ? "text-blue-600" : ""}`}
+                            onClick={scrollToOverview}
+                            className={`navlinks ${activeLink === 'overview' ? "text-blue-600" : ""}`}
                         >
-                            Get Started
+                            Overview
                         </button>
                     </div>
                 </div>
 
                 <div className={`border-l border-l-gray-900 pl-4`}></div>
                 <button 
-                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm'
+                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
                     onClick={() => router.push('/login')}
                 >
-                    Login
+                    Sign Up/Login
                 </button>
             </div>
         </nav>

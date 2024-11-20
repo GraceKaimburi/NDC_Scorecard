@@ -13,7 +13,7 @@ const carouselData = [
   {
     id: 'ndcs-overview',
     title: "What are NDCs?",
-    description: "Nationally Determined Contributions (NDCs) are country-driven climate action plans. They outline national goals to reduce emissions and adapt to climate change as part of the Paris Agreement.",
+    description: "Nationally Determined Contributions (NDCs) are country-driven commitments to develop and implement climate action plans. These plans aim to reduce emissions and build resilience to climate change under the Paris Agreement.",
     imagePath: "/images/whatndc.jpg",
     alt: "NDCs Overview Illustration",
     expandedContent: {
@@ -37,7 +37,7 @@ const carouselData = [
   {
     id: 'tool-purpose',
     title: "How the Tool Helps You",
-    description: "The NDC Scorecard offers a clear way to track climate progress. It highlights gaps, achievements, and actionable insights for policymakers, stakeholders, and the public.",
+    description: "The NDC Capacity Scorecard empowers you to measure progress in the development and implementation of NDCs. It provides a structured approach to identify achievements, address challenges, and drive impactful climate action for policymakers, stakeholders, and the public.",
     imagePath: "/images/help.jpg",
     alt: "Tool Purpose Illustration",
     expandedContent: {
@@ -61,7 +61,7 @@ const carouselData = [
   {
     id: 'benefits',
     title: "Why Use This Tool?",
-    description: "Gain access to valuable data insights, track sectoral progress, and receive capacity-building resources to accelerate climate action effectively.",
+    description: "Get actionable insights to support the development and implementation of NDCs. Track progress across sectors, identify capacity gaps, and access resources to strengthen climate initiatives.",
     imagePath: "/images/progress.jpg",
     alt: "Benefits Illustration",
     expandedContent: {
@@ -120,7 +120,8 @@ export const Carousel = () => {
   return (
     <section>
       <HeroSection />
-      <motion.div 
+      <motion.div
+        id='overview'
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -151,8 +152,8 @@ export const Carousel = () => {
                         transition={{ delay: 0.3, duration: 0.6 }}
                         className="md:w-1/2"
                       >
-                        <h2 className="text-2xl font-bold mb-4">{slide.title}</h2>
-                        <p className="text-gray-600 mb-4">{slide.description}</p>
+                        <h2 className="text-4xl font-bold mb-4">{slide.title}</h2>
+                        <p className="text-gray-600 mb-4 text-lg">{slide.description}</p>
                         <motion.div
                           variants={blinkingButtonVariants}
                           initial="initial"
@@ -162,7 +163,7 @@ export const Carousel = () => {
                         >
                           <Link
                             href={`/expanded/${slide.id}`}
-                            target="_blank"
+                            // target="_blank"
                             className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                           >
                             Read More
@@ -173,14 +174,14 @@ export const Carousel = () => {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
-                        className="md:w-1/2"
+                        className="md:w-1/2 mx-auto"
                       >
                         <Image
                           src={slide.imagePath}
                           alt={slide.alt}
                           width={500}
                           height={300}
-                          className="rounded-lg shadow-md w-full h-64 object-cover"
+                          className="rounded-lg w-full h-64 object-contain"
                         />
                       </motion.div>
                     </div>
