@@ -124,6 +124,10 @@ const Register = () => {
     }
   };
 
+  const handleOtpChange = (e) => {
+    setOtp(e.target.value);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-[70vh] bg-gray-100 px-4 py-16">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
@@ -249,7 +253,7 @@ const Register = () => {
                 type="text"
                 id="otp"
                 value={otp}
-                onChange={handleOtpChange}
+                onChange={handleOtpChange} 
                 placeholder="Enter OTP"
                 className="w-full border-2 border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
                 required
