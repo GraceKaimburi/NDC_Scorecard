@@ -48,7 +48,7 @@ const Navbar = () => {
         <nav className='fixed w-full z-10 bg-white shadow-sm shadow-gray-400 flex justify-between items-center px-6 py-5 font-poppins h-12'>
             <div>
                 <h1 className='font-bold text-sm sm:text-md md:text-lg text-blue-600'>
-                    <Link href='/'>NDC SCORECARD</Link>
+                    <Link href='/'>NDC CAPACITY SCORECARD</Link>
                 </h1>
             </div>
 
