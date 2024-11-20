@@ -78,7 +78,7 @@ const HeroSection = () => {
         </h1>
         
         <p className="text-xl md:text-2xl text-white/80">
-          Track global climate commitments and see where improvements are needed, all in one place.
+        Track your Country&apos;s capacity to develop and  mplement NDC&apos;s for climate commitments.
         </p>
       </div>
 

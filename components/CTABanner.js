@@ -8,10 +8,10 @@ const CTABanner = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-[#f0f9ff] py-8 mx-8"
+      className="py-8 mx-8"
     >
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col items-center justify-between gap-4">
           <motion.div 
             className="flex-1"
             initial={{ opacity: 0, x: -20 }}

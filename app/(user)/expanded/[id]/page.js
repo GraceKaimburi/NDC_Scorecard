@@ -78,11 +78,11 @@ const carouselData = [
     
     
     {
-      id: 'benefits',
-      title: "What are NDCs?",
+      id: 'tool-purpose',
+      title: "How the Tool Helps You",
       description: "Nationally Determined Contributions (NDCs) are country-driven climate action plans. They outline national goals to reduce emissions and adapt to climate change as part of the Paris Agreement.",
       expandedContent: {
-        title: "How the Tool Helps You",
+        title: "How this Tool Helps You",
         sections: [
           {
             title: "NDC Capacity Scorecard",
