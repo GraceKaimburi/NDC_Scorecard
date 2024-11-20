@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "NDC SCORECARD - AGNES",
+  title: "NDC CAPACITY SCORECARD - AGNES",
   description: "Nationally Determined Contributions (NDCs) Scorecard",
   icons: {
     icon: '/favicon.ico', // Assuming your favicon.ico is in the public folder
