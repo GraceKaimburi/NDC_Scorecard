@@ -114,7 +114,7 @@ const Navbar = () => {
                 <div className={`border-l border-l-gray-900 pl-4`}></div>
                 <button 
                     className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
-                    onClick={() => router.push('/login')}
+                    onClick={() => router.push('/register')}
                 >
                     Sign Up/Login
                 </button>

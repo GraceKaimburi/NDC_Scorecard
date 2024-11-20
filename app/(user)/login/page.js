@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/AuthContext";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ const LoginForm = () => {
   const [token, setToken] = useState("");
 
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -35,10 +37,8 @@ const LoginForm = () => {
         setShowOtpInput(true);
         setResponseMessage("Please enter the OTP sent to your email.");
       } else if (res.status === 401) {
-        // Handle 401 Unauthorized explicitly
         setResponseMessage("Invalid email or password. Please try again.");
       } else if (res.status === 404) {
-        // Handle account not found
         setResponseMessage("No account found with this email. Please create an account.");
       } else {
         setResponseMessage(data.message || "Login failed. Please try again later.");
@@ -68,6 +68,8 @@ const LoginForm = () => {
       const data = await res.json();
 
       if (res.ok) {
+        // Call the login function from auth context with the user data
+        await login(data, data.access_token);
         setResponseMessage("Login successful! Redirecting...");
         router.push("/dashboard");
       } else if (res.status === 400 && data.message === "Invalid OTP.") {
