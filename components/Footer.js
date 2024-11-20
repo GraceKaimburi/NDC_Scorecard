@@ -6,7 +6,7 @@ const Footer = () => {
         <footer className="bg-white text-gray-800 py-8 mt-4">
             <div className="max-w-6xl mx-auto px-4">
                 {/* Title */}
-                <h2 className="text-2xl font-bold mb-8 text-center">NDC Scorecard</h2>
+                <h2 className="text-2xl font-bold mb-8 text-center">NDC CAPACITY Scorecard</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Contacts Section */}
