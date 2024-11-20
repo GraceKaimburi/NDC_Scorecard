@@ -1,8 +1,11 @@
-'use client'
+"use client";
+
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { MdMenuOpen, MdClose } from "react-icons/md";
 import { useRouter } from 'next/navigation';
+import { useAuth } from './AuthContext';
+import LogoutButton from './LogoutButton';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +13,7 @@ const Navbar = () => {
     const menuRef = useRef(null);
 
     const router = useRouter();
+    const { user, isAuthenticated } = useAuth();
 
     const handleToggleMenu = () => {
         setIsOpen(!isOpen);
@@ -112,12 +116,19 @@ const Navbar = () => {
                 </div>
 
                 <div className={`border-l border-l-gray-900 pl-4`}></div>
-                <button 
-                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
-                    onClick={() => router.push('/register')}
-                >
-                    Sign Up/Login
-                </button>
+                {isAuthenticated ? (
+                    <div className="flex gap-4 items-center">
+                        <span className="text-sm">Welcome, {user.first_name}!</span>
+                        <LogoutButton />
+                    </div>
+                ) : (
+                    <button 
+                        className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
+                        onClick={() => router.push('/register')}
+                    >
+                        Sign Up/Login
+                    </button>
+                )}
             </div>
         </nav>
     );
