@@ -16,6 +16,7 @@ import {
 import { Bar, Line } from 'react-chartjs-2';
 import { ArrowLeft, ChartBar, ClipboardList, Settings, Activity, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AuthMiddleware from '@/AuthMiddleware';
 
 ChartJS.register(
   CategoryScale,
@@ -691,6 +692,7 @@ const Dashboard = () => {
     };
 
     return (
+      <AuthMiddleware>
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -767,6 +769,7 @@ const Dashboard = () => {
           </motion.div>
         </div>
       </motion.div>
+      </AuthMiddleware>
     );
   };
 

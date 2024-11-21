@@ -3,6 +3,7 @@
 import { useAuth } from "./components/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Loading from "./components/Loading";
 
 const AuthMiddleware = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -18,7 +19,7 @@ const AuthMiddleware = ({ children }) => {
 
   if (loading) {
     // Show a loading state while checking authentication
-    return <div>Loading...</div>;
+    return <Loading />
   }
 
   if (!isAuthenticated) {
