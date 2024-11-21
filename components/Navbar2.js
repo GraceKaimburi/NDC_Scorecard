@@ -3,16 +3,17 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { MdMenuOpen, MdClose } from "react-icons/md";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from './AuthContext';
 import LogoutButton from './LogoutButton';
 
-const Navbar2 = () => {
+const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [activeLink, setActiveLink] = useState('home');
     const menuRef = useRef(null);
 
     const router = useRouter();
+    const pathname = usePathname();
     const { user, isAuthenticated } = useAuth();
 
     const handleToggleMenu = () => {
@@ -50,10 +51,37 @@ const Navbar2 = () => {
         };
     }, [isOpen]);
 
+    // Determine whether to show dashboard or logout button
+    const RightSideButton = () => {
+        if (!isAuthenticated) {
+            return (
+                <button 
+                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
+                    onClick={() => router.push('/register')}
+                >
+                    Sign Up/Login
+                </button>
+            );
+        }
+
+        if (pathname === '/') {
+            return (
+                <button 
+                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
+                    onClick={() => router.push('/dashboard')}
+                >
+                    Go to Dashboard
+                </button>
+            );
+        }
+
+        return <LogoutButton />;
+    };
+
     return (
         <nav className='fixed w-full z-10 bg-white shadow-sm shadow-gray-400 flex justify-between items-center px-6 py-5 font-poppins h-12'>
             <div>
-                <h1 className='font-bold text-sm sm:text-md md:text-lg text-blue-600'>
+                <h1 className='font-bold text-xs sm:text-sm md:text-md text-blue-600'>
                     NDC CAPACITY SCORECARD
                 </h1>
             </div>
@@ -116,22 +144,13 @@ const Navbar2 = () => {
                 </div>
 
                 <div className={`border-l border-l-gray-900 pl-4`}></div>
-                {isAuthenticated ? (
-                    <div className="flex gap-4 items-center">
-                        <span className="text-sm">Welcome, {user.first_name}!</span>
-                        <LogoutButton />
-                    </div>
-                ) : (
-                    <button 
-                        className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
-                        onClick={() => router.push('/register')}
-                    >
-                        Sign Up/Login
-                    </button>
+                {isAuthenticated && (
+                    <span className="text-sm mr-4">Welcome, {user.first_name}!</span>
                 )}
+                <RightSideButton />
             </div>
         </nav>
     );
 }
 
-export default Navbar2;
+export default Navbar;

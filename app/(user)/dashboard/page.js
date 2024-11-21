@@ -417,6 +417,32 @@ const Dashboard = () => {
     }
   };
 
+  const getSessions = async () => {
+    try{
+      const response = await fetch('https://ndcbackend.agnesafrica.org/api/session/', {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      const data = await response.json()
+
+      if(response.ok){
+        console.log(data)
+      }
+      else {
+        console.log("Error Fetching Sessions Data")
+      }
+
+
+
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+
   const QuestionModal = () => {
     if (!showModal) return null;
 
@@ -793,7 +819,11 @@ const Dashboard = () => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setShowModal(true)}
+        onClick={() => {
+          setShowModal(true)
+          getSessions()
+        }
+        }
         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
       >
         Update Assessment
