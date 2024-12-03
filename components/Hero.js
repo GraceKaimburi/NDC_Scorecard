@@ -8,11 +8,11 @@ const HeroSection = () => {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(100);
 
-  const phrases = [
-    'tracking and monitoring the development of NDCs',
-    'assessing progress in the implementation of NDCs',
-    'enhancing capacity for NDC-related policies'
-  ];
+  // const phrases = [
+  //   'tracking and monitoring the development of NDCs',
+  //   'assessing progress in the implementation of NDCs',
+  //   'enhancing capacity for NDC-related policies'
+  // ];
 
   useEffect(() => {
     const handleTyping = () => {
@@ -51,7 +51,12 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-between min-h-screen overflow-hidden py-20">
+    <div
+      className="relative flex flex-col items-center justify-between min-h-screen overflow-hidden py-20"
+      style={{
+        marginTop: '0px', // Adjust this to match the navbar's height
+      }}
+    >
       <video
         className="absolute top-0 left-0 w-full h-full object-cover"
         autoPlay
@@ -60,25 +65,25 @@ const HeroSection = () => {
         playsInline
       >
         <source src="/images/nature.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
+        Your browser does not support the video.
       </video>
-      
+
       <div
         className="absolute top-0 left-0 w-full h-full bg-black opacity-60"
         aria-hidden="true"
       />
-      
-      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8 px-4 mt-32">
+
+      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8 px-4">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-          <span>Your Guide to </span>
+          <span>Your Guide to assessing progress in the development and implementation of NDCs</span>
           <span className="text-white">
             {currentText}
-            <span className="animate-pulse inline-block align-bottom">|</span>
+            {/* <span className="animate-pulse inline-block align-bottom">|</span> */}
           </span>
         </h1>
-        
+
         <p className="text-xl md:text-2xl text-white/80">
-        Track your Country&apos;s capacity to develop and  mplement NDC&apos;s for climate commitments.
+          Track your Country&apos;s capacity to develop and implement NDC&apos;s for climate commitments.
         </p>
       </div>
 
