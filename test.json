@@ -1,0 +1,23 @@
+{
+  "session": { "id": 57 },
+  "answers": [
+    { "question_id": 88, "selected_choice": 414 },
+    { "question_id": 89, "selected_choice": 418 },
+    { "question_id": 90, "selected_choice": 425 },
+    { "question_id": 91, "selected_choice": 427 },
+    { "question_id": 92, "selected_choice": 434 },
+    { "question_id": 93, "selected_choice": 437 },
+    { "question_id": 94, "selected_choice": 442 },
+    { "question_id": 95, "selected_choice": 448 },
+    { "question_id": 96, "selected_choice": 454 },
+    { "question_id": 97, "selected_choice": 456 },
+    { "question_id": 98, "selected_choice": 458 },
+    { "question_id": 99, "selected_choice": 464 },
+    { "question_id": 100, "selected_choice": 471 },
+    { "question_id": 101, "selected_choice": 476 },
+    { "question_id": 102, "selected_choice": 479 },
+    { "question_id": 103, "selected_choice": 483 },
+    { "question_id": 104, "selected_choice": 487 },
+    { "question_id": 105, "selected_choice": 492 }
+  ]
+}
