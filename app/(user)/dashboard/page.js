@@ -39,6 +39,66 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+// After imports and ChartJS setup
+
+const getRatingColor = (rating) => {
+  switch (rating?.toLowerCase()) {
+    case "good":
+      return "text-green-600";
+    case "average":
+      return "text-yellow-600";
+    case "poor":
+      return "text-red-600";
+    default:
+      return "text-gray-600";
+  }
+};
+
+const SectorCapacityCards = ({ implementationData, developmentData }) => {
+  const sectors = [
+    { name: "Finance", icon: ChartBar },
+    { name: "Technical", icon: Settings },
+    { name: "Governance", icon: ClipboardList },
+    { name: "Monitoring", icon: Activity }
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
+      {sectors.map((sector) => {
+        const Icon = sector.icon;
+        const key = sector.name.toLowerCase();
+        return (
+          <motion.div
+            key={sector.name}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white p-4 rounded-lg shadow-lg"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Icon className="w-5 h-5 text-blue-500" />
+              <h3 className="text-lg font-semibold">{sector.name}</h3>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Implementation:</span>
+                <span className={`text-sm font-medium ${getRatingColor(implementationData[key])}`}>
+                  {implementationData[key]}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Development:</span>
+                <span className={`text-sm font-medium ${getRatingColor(developmentData[key])}`}>
+                  {developmentData[key]}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
 
 const Dashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
@@ -203,6 +263,7 @@ const Dashboard = () => {
       },
     ],
   };
+  
 
   // Implementation and Development data states
   const [implementationData, setImplementationData] = useState({
@@ -859,7 +920,7 @@ const Dashboard = () => {
           exit={{ opacity: 0, y: -20 }}
           className="p-6"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -960,7 +1021,7 @@ const Dashboard = () => {
         className="mt-6 bg-white rounded-lg shadow-lg p-6"
       >
         <h2 className="text-xl font-bold mb-4">Recommended Resources</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           {lowestRatedSectors.map((sector) => (
             <div key={sector} className="space-y-4">
               <h3 className="text-lg font-semibold capitalize">
@@ -1004,11 +1065,15 @@ const Dashboard = () => {
 
     return (
       <AuthMiddleware>
+        <SectorCapacityCards 
+          implementationData={implementationData}
+          developmentData={developmentData}
+        />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-2"
         >
           <motion.div
             initial={{ x: -20, opacity: 0 }}
@@ -1017,12 +1082,12 @@ const Dashboard = () => {
             className="bg-white p-6 rounded-lg shadow-lg"
           >
             <h2 className="text-xl font-bold mb-4">Overall Capacity Ratings</h2>
-            <div className="h-96">
+            <div className="h-72">
               <Bar data={chartData} options={chartOptions} />
             </div>
           </motion.div>
 
-          <div className="grid grid-rows-2 gap-6">
+          <div className="grid grid-rows-2 gap-2">
             <motion.div
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -1033,7 +1098,7 @@ const Dashboard = () => {
               className="bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
             >
               <h3 className="text-xl font-bold mb-4">Implementation</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2">
                 {Object.entries(implementationData).map(
                   ([key, value], index) => (
                     <motion.div
@@ -1063,7 +1128,7 @@ const Dashboard = () => {
               className="bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
             >
               <h3 className="text-xl font-bold mb-4">Development</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2">
                 {Object.entries(developmentData).map(([key, value], index) => (
                   <motion.div
                     key={key}
