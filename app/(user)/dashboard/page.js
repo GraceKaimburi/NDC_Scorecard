@@ -1082,7 +1082,7 @@ const Dashboard = () => {
             className="bg-white p-6 rounded-lg shadow-lg"
           >
             <h2 className="text-xl font-bold mb-4">Overall Capacity Ratings</h2>
-            <div className="h-96">
+            <div className="h-72">
               <Bar data={chartData} options={chartOptions} />
             </div>
           </motion.div>
