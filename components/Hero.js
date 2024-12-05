@@ -14,32 +14,32 @@ const HeroSection = () => {
   //   'enhancing capacity for NDC-related policies'
   // ];
 
-  useEffect(() => {
-    const handleTyping = () => {
-      const currentPhrase = phrases[currentPhraseIndex];
+  // useEffect(() => {
+  //   const handleTyping = () => {
+  //     const currentPhrase = phrases[currentPhraseIndex];
 
-      if (!isDeleting) {
-        if (currentText.length < currentPhrase.length) {
-          setCurrentText(currentPhrase.slice(0, currentText.length + 1));
-          setTypingSpeed(100);
-        } else {
-          setTypingSpeed(2000);
-          setIsDeleting(true);
-        }
-      } else {
-        if (currentText.length === 0) {
-          setIsDeleting(false);
-          setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
-        } else {
-          setCurrentText(currentText.slice(0, -1));
-          setTypingSpeed(50);
-        }
-      }
-    };
+  //     if (!isDeleting) {
+  //       if (currentText.length < currentPhrase.length) {
+  //         setCurrentText(currentPhrase.slice(0, currentText.length + 1));
+  //         setTypingSpeed(100);
+  //       } else {
+  //         setTypingSpeed(2000);
+  //         setIsDeleting(true);
+  //       }
+  //     } else {
+  //       if (currentText.length === 0) {
+  //         setIsDeleting(false);
+  //         setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+  //       } else {
+  //         setCurrentText(currentText.slice(0, -1));
+  //         setTypingSpeed(50);
+  //       }
+  //     }
+  //   };
 
-    const timer = setTimeout(handleTyping, typingSpeed);
-    return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentPhraseIndex, typingSpeed]);
+  //   const timer = setTimeout(handleTyping, typingSpeed);
+  //   return () => clearTimeout(timer);
+  // }, [currentText, isDeleting, currentPhraseIndex, typingSpeed]);
 
   const scrollToContent = () => {
     const viewportHeight = window.innerHeight * 0.7;
