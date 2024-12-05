@@ -38,7 +38,7 @@ const LoginForm = () => {
 
       const data = await res.json();
 
-      console.log(`data returned by login endpoint: ${JSON.stringify(data)}`);
+      // console.log(`data returned by login endpoint: ${JSON.stringify(data)}`);
 
       if (res.ok) {
         // Directly call login and redirect without OTP
