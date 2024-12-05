@@ -43,7 +43,7 @@ export async function fetchWithAuth(url, options = {}) {
 
 async function refreshAccessToken() {
   const refreshToken = localStorage.getItem("refreshToken");
-  console.log("refreshing token using current:", refreshToken);
+  // console.log("refreshing token using current:", refreshToken);
   const response = await fetch(`${BACKEND_BASE_URL}/auth/refresh_token/`, {
     method: "POST",
     headers: {
