@@ -6,6 +6,7 @@ import { MdMenuOpen, MdClose } from "react-icons/md";
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from './AuthContext';
 import LogoutButton from './LogoutButton';
+import Link from 'next/link';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -55,23 +56,23 @@ const Navbar = () => {
     const RightSideButton = () => {
         if (!isAuthenticated) {
             return (
-                <button 
+                <Link 
                     className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
-                    onClick={() => router.push('/register')}
+                    href="/register"
                 >
                     Sign Up/Login
-                </button>
+                </Link>
             );
         }
 
         if (pathname === '/') {
             return (
-                <button 
+                <Link 
                     className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm text-nowrap'
-                    onClick={() => router.push('/dashboard')}
+                    href="/dashboard"
                 >
                     Go to Dashboard
-                </button>
+                </Link>
             );
         }
 
@@ -89,12 +90,12 @@ const Navbar = () => {
             <div className='flex gap-4 items-center'>   
                 {/* Large screen navlinks */}
                 <div className='hidden sm:flex gap-4'>
-                    <button 
-                        onClick={() => router.push('/')}
+                    <Link 
+                        href="/"
                         className={`navlinks ${activeLink === 'home' ? "text-blue-600" : ""}`}
                     >
                         Home
-                    </button>
+                    </Link>
                     {/* <button 
                         onClick={scrollToOverview}
                         className={`navlinks ${activeLink === 'overview' ? "text-blue-600" : ""}`}
@@ -128,12 +129,12 @@ const Navbar = () => {
                         ref={menuRef}
                         className="flex flex-col gap-2 w-[95%] bg-slate-50 py-2 items-center rounded-xl"
                     >
-                        <button
-                            onClick={() => router.push('/')}
+                        <Link
+                            href="/"
                             className={`navlinks ${activeLink === 'home' ? "text-blue-600" : ""}`}
                         >
                             Home
-                        </button>
+                        </Link>
                         {/* <button
                             onClick={scrollToOverview}
                             className={`navlinks ${activeLink === 'overview' ? "text-blue-600" : ""}`}
