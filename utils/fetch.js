@@ -55,7 +55,13 @@ async function refreshAccessToken() {
     }),
   });
   if (!response.ok) {
-    throw new Error("Your session has expired. Please log in again.");
+    // Clear stored auth data
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('refreshToken');
+    
+    window.location.href='/login'
+    // throw new Error("Your session has expired. Please log in again.");
   }
   const data = await response.json();
   return data.access_token;
