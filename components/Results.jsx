@@ -1,46 +1,50 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiX, 
-  FiStar, 
-  FiDownload, 
-  FiShare2, 
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FiX,
+  FiStar,
+  FiDownload,
+  FiShare2,
   FiExternalLink,
   FiBarChart2,
   FiAward,
-  FiTrendingUp
-} from 'react-icons/fi';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+  FiTrendingUp,
+} from "react-icons/fi";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+import { useDashboardData } from "@/store/DashboardContext";
 
-const ResultsModal = ({ 
-  isOpen, 
-  onClose, 
-  results, 
-  implementationData, 
-  developmentData 
-}) => {
+const ResultsModal = () => {
+  const {
+    showResults: isOpen,
+    answers: results,
+    implementationData,
+    developmentData,
+    setShowResults,
+  } = useDashboardData();
+  const onClose = () => setShowResults(false);
+
   const handleDownloadPDF = async () => {
-    const element = document.getElementById('results-content');
+    const element = document.getElementById("results-content");
     const canvas = await html2canvas(element);
-    const imgData = canvas.toDataURL('image/png');
-    
+    const imgData = canvas.toDataURL("image/png");
+
     const pdf = new jsPDF();
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save('ndc-assessment-results.pdf');
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("ndc-assessment-results.pdf");
   };
 
   const handleShare = async () => {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'NDC Assessment Results',
-          text: 'Check out my NDC Assessment Results',
-          url: window.location.href
+          title: "NDC Assessment Results",
+          text: "Check out my NDC Assessment Results",
+          url: window.location.href,
         });
       } else {
         // Fallback to email
@@ -48,16 +52,20 @@ const ResultsModal = ({
         window.location.href = mailtoLink;
       }
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
     }
   };
 
   const getRatingColor = (rating) => {
-    switch(rating.toLowerCase()) {
-      case 'good': return 'text-green-500';
-      case 'average': return 'text-yellow-500';
-      case 'poor': return 'text-red-500';
-      default: return 'text-gray-500';
+    switch (rating.toLowerCase()) {
+      case "good":
+        return "text-green-500";
+      case "average":
+        return "text-yellow-500";
+      case "poor":
+        return "text-red-500";
+      default:
+        return "text-gray-500";
     }
   };
 
@@ -85,7 +93,9 @@ const ResultsModal = ({
           </button>
 
           <div id="results-content" className="p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">Assessment Results</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center">
+              Assessment Results
+            </h2>
 
             {/* Implementation Capacity Section */}
             <div className="mb-8">
@@ -95,7 +105,10 @@ const ResultsModal = ({
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 {Object.entries(implementationData).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                  <div
+                    key={key}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                  >
                     <span className="capitalize">{key}</span>
                     <span className={`font-medium ${getRatingColor(value)}`}>
                       {value}
@@ -113,7 +126,10 @@ const ResultsModal = ({
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 {Object.entries(developmentData).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                  <div
+                    key={key}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                  >
                     <span className="capitalize">{key}</span>
                     <span className={`font-medium ${getRatingColor(value)}`}>
                       {value}
@@ -130,7 +146,9 @@ const ResultsModal = ({
                   <FiStar
                     key={star}
                     className={`w-8 h-8 ${
-                      star <= 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                      star <= 4
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -160,7 +178,10 @@ const ResultsModal = ({
                   className="flex items-center gap-2 p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
                 >
                   <FiExternalLink className="flex-shrink-0 text-blue-500" />
-                  <span>Enhancing NDCs: A Guide to Strengthening National Climate Plans</span>
+                  <span>
+                    Enhancing NDCs: A Guide to Strengthening National Climate
+                    Plans
+                  </span>
                 </a>
                 <a
                   href="https://ndcguide.cdkn.org/book/planningforndcimplementationaquickstartguide/deliveringtheplan/"

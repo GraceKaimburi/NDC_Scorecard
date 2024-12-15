@@ -11,7 +11,7 @@ export async function POST(request) {
 
   // Update the ratings based on the answers
   const newRatings = {
-    implementation: {
+    Implementation:  {
       finance: calculateRating(answers['finance-1']),
       technical: calculateRating(answers['technical-1']),
       governance: calculateRating(answers['governance-1']),

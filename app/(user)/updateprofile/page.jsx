@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { getAccessToken } from '@/utils/access-token';
-import Loading from '@/components/Loading';
+import Loading from '@/components/reusables/Loading';
 
 
 const UpdateProfileForm = () => {

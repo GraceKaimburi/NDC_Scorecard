@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getAccessToken } from '@/utils/access-token';
 
 // Create the auth context
 const AuthContext = createContext({
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = () => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = getAccessToken();
       const userData = JSON.parse(localStorage.getItem('userData'));
       
       if (token && userData) {

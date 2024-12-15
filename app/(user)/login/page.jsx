@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/AuthContext";
+import { useAuth } from "@/store/AuthContext";
 import Link from "next/link";
+import useFetch from "@/hooks/useFetch";
+import { isResponseOk } from "@/utils/is-response-ok";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { openAPI } = useFetch();
 
   // Removed OTP and related states
   // const [otp, setOtp] = useState("");
@@ -25,22 +28,16 @@ const LoginForm = () => {
     setResponseMessage("");
 
     try {
-      const res = await fetch(
-        "https://ndcbackend.agnesafrica.org/auth/login/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
+      const res = await openAPI.post(
+        "/auth/login/",
+        { email, password }
       );
 
-      const data = await res.json();
+      const data = res.data;
 
       // console.log(`data returned by login endpoint: ${JSON.stringify(data)}`);
 
-      if (res.ok) {
+      if (isResponseOk(res)) {
         // Directly call login and redirect without OTP
         await login(data, data.access_token);
         setResponseMessage("Login successful! Redirecting...");

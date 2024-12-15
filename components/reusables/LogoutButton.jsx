@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../../store/AuthContext";
 
 const LogoutButton = () => {
   const { logout } = useAuth();

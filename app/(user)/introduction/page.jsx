@@ -1,8 +1,8 @@
 'use client'
-import HeroSection from "@/components/Hero";
-import TestimonialCarousel from "@/components/TestimonialCarousel";
+import HeroSection from "@/components/home/Hero";
+import TestimonialCarousel from "@/components/home/TestimonialCarousel";
 import Image from "next/image";
-import CTABanner from "@/components/CTABanner";
+import CTABanner from "@/components/home/CTABanner";
 import { useState, useEffect } from 'react';
 import { IoChevronBackCircle, IoChevronForwardCircle } from "react-icons/io5";
 

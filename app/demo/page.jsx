@@ -17,7 +17,7 @@ const Page = () => {
 
       console.log("using access token:", accessToken);
       const res = await fetch(
-        "https://ndcbackend.agnesafrica.org/api/analysis/",
+        "https://ndcbackend.agnesafrica.org/api/session/",
         {
           // add bearer token
           headers: {

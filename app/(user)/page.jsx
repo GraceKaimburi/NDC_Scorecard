@@ -5,9 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoChevronBackCircle, IoChevronForwardCircle } from "react-icons/io5";
 import { motion } from 'framer-motion';
-import HeroSection from '@/components/Hero';
-import TestimonialCarousel from '@/components/TestimonialCarousel';
-import CTABanner from '@/components/CTABanner';
+import HeroSection from '@/components/home/Hero';
+import TestimonialCarousel from '@/components/home/TestimonialCarousel';
+import CTABanner from '@/components/home/CTABanner';
 
 const carouselData = [
   {
