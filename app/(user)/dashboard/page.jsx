@@ -1,76 +1,52 @@
 "use client";
-import React, { useState } from "react";
-import ResultsModal from "@/components/Results";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { motion, AnimatePresence } from "framer-motion";
-import AuthMiddleware from "@/middlewares/AuthMiddleware";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import DetailedView from "@/components/dashboard/DetailedView";
-import { MainDashboard } from "@/components/dashboard/MainDashboard";
-import { QuestionModal } from "@/components/dashboard/QuestionModal";
-import SavedSessionsModal from "@/components/dashboard/SavedSessionsModal";
-import MaxWidth from "@/components/max-width";
-import { useDashboardData } from "@/store/DashboardContext";
+import React from "react";
+import DevelopmentSvg from "./DevelopmentSvg";
+import ImplementationSvg from "./ImplementationSvg";
+import Link from "next/link";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const Dashboard = () => {
-  const dsData = useDashboardData();
-
-
-  return (
-    <AuthMiddleware>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="min-h-screen bg-gray-50 p-6"
-      >
-        <MaxWidth>
-
-          <DashboardHeader />
-
-          <AnimatePresence mode="wait">
-            {dsData.selectedSection ? (
-              <DetailedView key="detailed" type={dsData.selectedSection} />
-            ) : (
-              <MainDashboard key="main" />
-            )}
-          </AnimatePresence>
-
-          <QuestionModal />
-          <SavedSessionsModal />
-
-          <ResultsModal />
-
-          {dsData.isLoading && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-            </div>
-          )}
-        </MaxWidth>
-      </motion.div>
-    </AuthMiddleware>
-  );
-};
-
-export default Dashboard;
+export default function Dashboard() {
+	const data = [
+		{
+			href: "/dashboard/development",
+			title: "Development Capacity",
+			Icon: DevelopmentSvg,
+			description: "This is the development capacity section",
+		},
+		{
+			href: "/dashboard/implementation",
+			title: "Implementation Capacity",
+			Icon: ImplementationSvg,
+			description: "This is the implementation capacity section",
+		},
+	];
+	return (
+		<div>
+			<div className="my-4">
+				<div>
+					<h1 className="text-2xl font-bold mb-4">Welcome to the Dashboard </h1>
+					<p className="text-gray-700">
+						Select a capacity to view the details
+					</p>
+				</div>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+					{data.map((item, index) => (
+						<Link
+							key={index}
+							className="p-4 border border-gray-200 rounded-lg flex items-center space-x-4 bg-white cursor-pointer hover:text-blue-500"
+							href={item.href}
+						>
+							<div className="flex flex-col space-x-2 ">
+								<item.Icon height="400" />
+								<hr className="my-4"/>
+								<p href={item.href} className="text-blue-600 ">
+									{item.title}
+								</p>
+								<p className="text-gray-700">{item.description}</p>
+							</div>
+						</Link>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
