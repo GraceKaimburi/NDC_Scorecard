@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <AuthProvider>
           <NavRenderer />
-          <section className="pt-12">{children}</section>
+          <section className="pt-12  bg-gray-50">{children}</section>
           <Footer />
         </AuthProvider>
       </body>

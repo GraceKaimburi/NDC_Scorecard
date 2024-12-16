@@ -124,7 +124,7 @@ export const Carousel = () => {
         id='overview'
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 2 }}
         className="relative max-w-6xl mx-auto px-4 py-12"
       >
         <motion.h1 
@@ -149,7 +149,7 @@ export const Carousel = () => {
                       <motion.div 
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3, duration: 0.6 }}
+                        transition={{ delay: 1, duration: 2 }}
                         className="md:w-1/2"
                       >
                         <h2 className="text-4xl font-bold mb-4">{slide.title}</h2>
@@ -173,7 +173,7 @@ export const Carousel = () => {
                       <motion.div 
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4, duration: 0.6 }}
+                        transition={{ delay: 1, duration: 2 }}
                         className="md:w-1/2 mx-auto"
                       >
                         <Image

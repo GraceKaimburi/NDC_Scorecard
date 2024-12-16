@@ -12,854 +12,877 @@ import { Settings } from "lucide-react";
 import { Activity } from "lucide-react";
 
 import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
 } from "react";
 
 const DashboardContext = createContext({});
 
 const DashboardProvider = ({ children }) => {
-  const { privateAPI } = useFetch();
-  const {
-    createSession,
-    getSavedSessions,
-    resumeSession,
-    updateSessionStatus,
-    fetchScoreCardData,
-    fetchSessionData,
-  } = useDashboardFetch();
-  // State declarations
-  /**@type {import("@/types/react").ReactUseStateType<string>} */
-  const [selectedSection, setSelectedSection] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  /**@type {import("@/types/react").ReactUseStateType<import("@/types").SectorDataType[]>} */
-  const [questions, setQuestions] = useState([]);
-  /**@type {import("@/types/react").ReactUseStateType<import("@/types").QuestionAnswerType>} */
-  const [answers, setAnswers] = useState({});
-  /**@type {import("@/types/react").ReactUseStateType<import("@/types").UploadedQuestionAnswerType>} */
-  const [questionFiles, setQuestionFiles] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [scoreCardData, setScoreCardData] = useState(null);
-  const [sessionData, setSessionData] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  const [currentSector, setCurrentSector] = useState(0);
-  const [currentGraphIndex, setCurrentGraphIndex] = useState(0);
-  const [sessionId, setSessionId] = useState(null);
-  const [sessionStatus, setSessionStatus] = useState("Start");
-  const [savedSessions, setSavedSessions] = useState([]);
-  const [showSavedSessions, setShowSavedSessions] = useState(false);
-  const [historicalData, setHistoricalData] = useState([]);
-  const [sectorResponseAnswers, setSectorResponseAnswers] = useState({});
-  // const detailedData = getDetailedData(type);
+	const { privateAPI } = useFetch();
+	const {
+		createSession,
+		getSavedSessions,
+		resumeSession,
+		updateSessionStatus,
+		fetchScoreCardData,
+		fetchSessionData,
+	} = useDashboardFetch();
+	// State declarations
+	/**@type {import("@/types/react").ReactUseStateType<string>} */
+	const [selectedSection, setSelectedSection] = useState(null);
+	const [showModal, setShowModal] = useState(false);
+	// /**@type {import("@/types/react").ReactUseStateType<import("@/types").SectorDataType[]>} */
+	// const [questions, setQuestions] = useState([]);
+	/**@type {import("@/types/react").ReactUseStateType<import("@/types").QuestionAnswerType>} */
+	const [answers, setAnswers] = useState({});
+	/**@type {import("@/types/react").ReactUseStateType<import("@/types").UploadedQuestionAnswerType>} */
+	const [questionFiles, setQuestionFiles] = useState({});
+	const [isLoading, setIsLoading] = useState(false);
+	const [scoreCardData, setScoreCardData] = useState(null);
+	const [sessionData, setSessionData] = useState([]);
+	const [showResults, setShowResults] = useState(false);
+	const [currentSector, setCurrentSector] = useState(0);
+	const [currentGraphIndex, setCurrentGraphIndex] = useState(0);
+	const [sessionId, setSessionId] = useState(null);
+	const [sessionStatus, setSessionStatus] = useState("Start");
+	const [savedSessions, setSavedSessions] = useState([]);
+	const [showSavedSessions, setShowSavedSessions] = useState(false);
+	const [historicalData, setHistoricalData] = useState([]);
+	const [sectorResponseAnswers, setSectorResponseAnswers] = useState({});
+	/**@type {import("@/types/react").ReactUseStateType<'development'|'implementation'>}}*/
+	const [currentSectorCategory, setCurrentSectorCategory] =
+		useState("implementation");
+	// const detailedData = getDetailedData(type);
 
-  const sectors = [
-    "Financial",
-    "Technical",
-    "Governance",
-    "Monitoring and Evaluation",
-  ];
+	const sectors = [
+		"Financial",
+		"Technical",
+		"Governance",
+		"Monitoring and Evaluation",
+	];
 
-  const handleSectorChange = (event) => {
-    const { value } = event.target;
-    // console.log("Selected Sector:", value);
+	const handleSectorChange = (event) => {
+		const { value } = event.target;
+		// console.log("Selected Sector:", value);
 
-    setCurrentSector(Number(value));
-  };
-  const isLastSector = currentSector === sectors.length - 1;
-  // Implementation and Development data states
-  const [implementationData, setImplementationData] = useState({
-    finance: "No Data",
-    technical: "No Data",
-    governance: "No Data",
-    monitoring: "No Data",
-  });
+		setCurrentSector(Number(value));
+	};
+	const isLastSector = currentSector === sectors.length - 1;
+	// Implementation and Development data states
+	const [implementationData, setImplementationData] = useState({
+		finance: "No Data",
+		technical: "No Data",
+		governance: "No Data",
+		monitoring: "No Data",
+	});
 
-  const [developmentData, setDevelopmentData] = useState({
-    finance: "No Data",
-    technical: "No Data",
-    governance: "No Data",
-    monitoring: "No Data",
-  });
-  const cumulativeData = [
-    {
-      category: "Finance",
-      value:
-        ratingToNumber(implementationData.finance) +
-        ratingToNumber(developmentData.finance),
-      displayRating: numberToRating(
-        ratingToNumber(implementationData.finance) +
-          ratingToNumber(developmentData.finance)
-      ),
-    },
-    {
-      category: "Technical",
-      value:
-        ratingToNumber(implementationData.technical) +
-        ratingToNumber(developmentData.technical),
-      displayRating: numberToRating(
-        ratingToNumber(implementationData.technical) +
-          ratingToNumber(developmentData.technical)
-      ),
-    },
-    {
-      category: "Governance",
-      value:
-        ratingToNumber(implementationData.governance) +
-        ratingToNumber(developmentData.governance),
-      displayRating: numberToRating(
-        ratingToNumber(implementationData.governance) +
-          ratingToNumber(developmentData.governance)
-      ),
-    },
-    {
-      category: "M&E",
-      value:
-        ratingToNumber(implementationData.monitoring) +
-        ratingToNumber(developmentData.monitoring),
-      displayRating: numberToRating(
-        ratingToNumber(implementationData.monitoring) +
-          ratingToNumber(developmentData.monitoring)
-      ),
-    },
-  ];
+	const [developmentData, setDevelopmentData] = useState({
+		finance: "No Data",
+		technical: "No Data",
+		governance: "No Data",
+		monitoring: "No Data",
+	});
+	const cumulativeData = [
+		{
+			category: "Finance",
+			value:
+				ratingToNumber(implementationData.finance) +
+				ratingToNumber(developmentData.finance),
+			displayRating: numberToRating(
+				ratingToNumber(implementationData.finance) +
+					ratingToNumber(developmentData.finance)
+			),
+		},
+		{
+			category: "Technical",
+			value:
+				ratingToNumber(implementationData.technical) +
+				ratingToNumber(developmentData.technical),
+			displayRating: numberToRating(
+				ratingToNumber(implementationData.technical) +
+					ratingToNumber(developmentData.technical)
+			),
+		},
+		{
+			category: "Governance",
+			value:
+				ratingToNumber(implementationData.governance) +
+				ratingToNumber(developmentData.governance),
+			displayRating: numberToRating(
+				ratingToNumber(implementationData.governance) +
+					ratingToNumber(developmentData.governance)
+			),
+		},
+		{
+			category: "M&E",
+			value:
+				ratingToNumber(implementationData.monitoring) +
+				ratingToNumber(developmentData.monitoring),
+			displayRating: numberToRating(
+				ratingToNumber(implementationData.monitoring) +
+					ratingToNumber(developmentData.monitoring)
+			),
+		},
+	];
 
-  // Chart configurations
-  const lineChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 3,
-        ticks: {
-          stepSize: 1,
-          callback: function (value) {
-            return ["Poor", "Average", "Good"][value - 1] || "";
-          },
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            const value = context.parsed.y;
-            return ["Poor", "Average", "Good"][Math.floor(value) - 1] || "";
-          },
-        },
-      },
-    },
-  };
+	// Chart configurations
+	const lineChartOptions = {
+		responsive: true,
+		maintainAspectRatio: false,
+		scales: {
+			y: {
+				beginAtZero: true,
+				max: 3,
+				ticks: {
+					stepSize: 1,
+					callback: function (value) {
+						return ["Poor", "Average", "Good"][value - 1] || "";
+					},
+				},
+			},
+			x: {
+				grid: {
+					display: false,
+				},
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+			tooltip: {
+				callbacks: {
+					label: function (context) {
+						const value = context.parsed.y;
+						return ["Poor", "Average", "Good"][Math.floor(value) - 1] || "";
+					},
+				},
+			},
+		},
+	};
 
-  const barChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 3,
-        ticks: {
-          stepSize: 1,
-          callback: function (value) {
-            return ["Poor", "Average", "Good"][value - 1] || "";
-          },
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            const dataIndex = context.dataIndex;
-            return `Rating: ${context.dataset.data[dataIndex]}`;
-          },
-        },
-      },
-    },
-  };
+	const barChartOptions = {
+		responsive: true,
+		maintainAspectRatio: false,
+		scales: {
+			y: {
+				beginAtZero: true,
+				max: 3,
+				ticks: {
+					stepSize: 1,
+					callback: function (value) {
+						return ["Poor", "Average", "Good"][value - 1] || "";
+					},
+				},
+			},
+			x: {
+				grid: {
+					display: false,
+				},
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+			tooltip: {
+				callbacks: {
+					label: function (context) {
+						const dataIndex = context.dataIndex;
+						return `Rating: ${context.dataset.data[dataIndex]}`;
+					},
+				},
+			},
+		},
+	};
 
-  const fetchData = useCallback(async () => {
-    try {
-      const [sessionResData, scoreData] = await Promise.all([
-        fetchSessionData(),
-        fetchScoreCardData(),
-      ]);
+	const fetchData = useCallback(async () => {
+		try {
+			const [sessionResData, scoreData] = await Promise.all([
+				fetchSessionData(),
+				fetchScoreCardData(),
+			]);
 
-      setScoreCardData(scoreData);
-      setSessionData(sessionResData);
+			setScoreCardData(scoreData);
+			setSessionData(sessionResData);
+			// if (scoreData && scoreData.length > 0) {
 
-      // Load saved sessions on initial load
-      await getSavedSessions();
+			// 	setQuestions(allQuestions);
+			// }
+			// Load saved sessions on initial load
+			await getSavedSessions();
+		} catch (error) {
+			console.error("Error fetching data:", error);
+		}
+	}, []);
+	const fetchHistoricalData = useCallback(async () => {
+		try {
+			const response = await privateAPI.get(
+				`/api/session/` // Removed 'analyses'
+			);
+			if (!isResponseOk(response))
+				throw new Error(`HTTP error! status: ${response.status}`);
 
-      const allQuestions = scoreData.flatMap((category) =>
-        category.sectors.flatMap((sector) =>
-          sector.questions.map((question) => ({
-            // id: question.id,
-            // text: question.text,
-            // choices: question.choices,
-            sector: sector.name,
-            category: category.name,
-            ...question,
-          }))
-        )
-      );
-      setQuestions(allQuestions);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }, []);
-  const fetchHistoricalData = useCallback(async () => {
-    try {
-      const response = await privateAPI.get(
-        `/api/session/` // Removed 'analyses'
-      );
-      if (!isResponseOk(response))
-        throw new Error(`HTTP error! status: ${response.status}`);
+			const data = response.data;
+			// console.log('Historical Data:', data); // For debugging
 
-      const data = response.data;
-      // console.log('Historical Data:', data); // For debugging
+			// Check if data exists and has the expected structure
+			// if (data && Array.isArray(data)) {
+			//   // Access the analysis field correctly
+			//   // setHistoricalData(data.map(item => item.analyses || {}));
+			//   setHistoricalData(data[0].analyses || {});
+			if (data && Array.isArray(data)) {
+				// Just set the data directly
+				setHistoricalData(data.analyses || {});
+			} else {
+				console.error("Invalid data structure received:", data);
+				setHistoricalData([]);
+			}
+		} catch (error) {
+			console.error("Error fetching historical data:", error);
+			setHistoricalData([]);
+		}
+	}, []);
+	/**
+	 *
+	 * @param {string} savedSessionId
+	 * @returns
+	 */
+	const handleResumeSession = async (savedSessionId) => {
+		await resumeSession(savedSessionId, (sessionData) => {
+			setSessionId(savedSessionId);
+			setSessionStatus("Resume");
+			setAnswers(
+				sessionData.reduce((acc, answer) => {
+					acc[answer.question] = { answer: answer.selected_choice };
+					return acc;
+				}, {})
+			);
 
-      // Check if data exists and has the expected structure
-      // if (data && Array.isArray(data)) {
-      //   // Access the analysis field correctly
-      //   // setHistoricalData(data.map(item => item.analyses || {}));
-      //   setHistoricalData(data[0].analyses || {});
-      if (data && Array.isArray(data)) {
-        // Just set the data directly
-        setHistoricalData(data.analyses || {});
-      } else {
-        console.error("Invalid data structure received:", data);
-        setHistoricalData([]);
-      }
-    } catch (error) {
-      console.error("Error fetching historical data:", error);
-      setHistoricalData([]);
-    }
-  }, []);
-  /**
-   *
-   * @param {string} savedSessionId
-   * @returns
-   */
-  const handleResumeSession = async (savedSessionId) => {
-    await resumeSession(savedSessionId, (sessionData) => {
-      setSessionId(savedSessionId);
-      setSessionStatus("Resume");
-      setAnswers(
-        sessionData.reduce((acc, answer) => {
-          acc[answer.question] = { answer: answer.selected_choice };
-          return acc;
-        }, {})
-      );
+			setShowSavedSessions(false);
+			setShowModal(true);
+		});
+	};
+	const handleCreateSession = async () => {
+		await createSession((data) => {
+			setSessionId(data.id);
+			setSessionStatus("Start");
+		});
+	};
+	const questions = useMemo(
+		function () {
+			if (!scoreCardData) return [];
+			const allQuestions = scoreCardData.flatMap(
+				({ name: categoryName, sectors: categorySectors }) => {
+					const categoryNameRegex = new RegExp(currentSectorCategory, "gim");
+					const categoryMatch = categoryNameRegex.test(categoryName);
+					console.log({
+						categoryName,
+						currentSectorCategory,
+						categoryNameRegex,
+						categoryMatch,
+					});
+					return categoryMatch
+						? categorySectors.flatMap((sector) =>
+								sector.questions.map((question) => ({
+									// id: question.id,
+									// text: question.text,
+									// choices: question.choices,
+									sector: sector.name,
+									category: categoryName,
+									...question,
+								}))
+						  )
+						: [];
+				}
+			);
+			return allQuestions;
+		},
+		[scoreCardData, currentSectorCategory]
+	);
+	const questionAnswerCheck = useMemo(
+		/**
+		 * @returns {import("@/types").QuestionAnswerAnalysisPreCheckType}
+		 */
+		() => {
+			const sectorQuestions = sectors
+				.map((sec) => {
+					const secQuestions = questions.filter((q) => q.sector === sec);
+					const reqQuestions = secQuestions
+						.filter((q) => q.is_required)
+						.map((q) => q.id.toString());
+					const reqCount = reqQuestions.length;
+					const answeredReqCount = Object.keys(answers).filter((id) =>
+						reqQuestions.includes(id)
+					).length;
+					const answeredNonReqCount = Object.keys(answers).filter(
+						(id) => !reqQuestions.includes(id)
+					).length;
+					const allAnswered = secQuestions.every((q) => answers[q.id]);
+					const allReqAnswered = reqCount === answeredReqCount;
+					const someAnswered = answeredReqCount > 0 || answeredNonReqCount > 0;
+					return {
+						sec,
+						allAnswered,
+						allReqAnswered,
+						someAnswered,
+					};
+				})
+				.reduce((acc, { sec, ...rest }) => {
+					acc[sec] = rest;
+					return acc;
+				}, /** @type {QuestionAnswerAnalysisPreCheckType}*/ ({}));
 
-      setShowSavedSessions(false);
-      setShowModal(true);
-    });
-  };
-  const handleCreateSession = async () => {
-    await createSession((data) => {
-      setSessionId(data.id);
-      setSessionStatus("Start");
-    });
-  };
+			return sectorQuestions;
+		},
+		[answers]
+	);
+	const currentUpdatableSessionStatus = useMemo(
+		function () {
+			const ans = Object.values(questionAnswerCheck);
+			const howManyAreAnswered = ans.filter((a) => a.allReqAnswered).length;
+			const totalSectors = sectors.length;
 
-  const questionAnswerCheck = useMemo(
-    /**
-     * @returns {import("@/types").QuestionAnswerAnalysisPreCheckType}
-     */
-    () => {
-      const sectorQuestions = sectors
-        .map((sec) => {
-          const secQuestions = questions.filter((q) => q.sector === sec);
-          const reqQuestions = secQuestions
-            .filter((q) => q.is_required)
-            .map((q) => q.id.toString());
-          const reqCount = reqQuestions.length;
-          const answeredReqCount = Object.keys(answers).filter((id) =>
-            reqQuestions.includes(id)
-          ).length;
-          const answeredNonReqCount = Object.keys(answers).filter(
-            (id) => !reqQuestions.includes(id)
-          ).length;
-          const allAnswered = secQuestions.every((q) => answers[q.id]);
-          const allReqAnswered = reqCount === answeredReqCount;
-          const someAnswered = answeredReqCount > 0 || answeredNonReqCount > 0;
-          return {
-            sec,
-            allAnswered,
-            allReqAnswered,
-            someAnswered,
-          };
-        })
-        .reduce((acc, { sec, ...rest }) => {
-          acc[sec] = rest;
-          return acc;
-        }, /** @type {QuestionAnswerAnalysisPreCheckType}*/ ({}));
+			const areAllAnswered = howManyAreAnswered === totalSectors;
 
-      return sectorQuestions;
-    },
-    [answers]
-  );
-  const currentUpdatableSessionStatus = useMemo(
-    function () {
-      const ans = Object.values(questionAnswerCheck);
-      const howManyAreAnswered = ans.filter((a) => a.allReqAnswered).length;
-      const totalSectors = sectors.length;
+			// return ans//.some((a) => !a.allAnswered) ? "PartialStop" : "Stop";
+			return {
+				status: /**@type {const} */ (areAllAnswered ? "Stop" : "PartialStop"),
+				howManyAreAnswered,
+				totalSectors,
+			};
+		},
+		[questionAnswerCheck, answers]
+	);
 
-      const areAllAnswered = howManyAreAnswered === totalSectors;
+	const resumableSessions = useMemo(
+		function () {
+			const onPause = sessionData.filter((session) =>
+				["Pause", "PartialStop"].includes(session.session_status)
+			);
+			const pendingStart = sessionData.filter(
+				(session) => session.session_status === "Start"
+			);
+			const partialStopped = sessionData.filter(
+				(session) => session.session_status === "PartialStop"
+			);
+			const stopped = sessionData.filter(
+				(session) => session.session_status === "Stop"
+			);
+			const actionType = /**@type {const} */ (
+				onPause.length > 0 ? "Resume" : "Start"
+			);
+			return { onPause, pendingStart, partialStopped, stopped, actionType };
+		},
+		[savedSessions, sessionData]
+	);
 
-      // return ans//.some((a) => !a.allAnswered) ? "PartialStop" : "Stop";
-      return {
-        status: /**@type {const} */ (areAllAnswered ? "Stop" : "PartialStop"),
-        howManyAreAnswered,
-        totalSectors,
-      };
-    },
-    [questionAnswerCheck, answers]
-  );
+	const stoppedSessionsWithAnalysis = useMemo(
+		function () {
+			const stopped = sessionData.filter(
+				(session) =>
+					session.session_status === "Stop" ||
+					session.session_status === "PartialStop"
+			);
+			if (stopped.length > 0) {
+				const firstSorted = stopped.sort(
+					(a, b) => new Date(b.session_date) - new Date(a.session_date)
+				)[0];
 
-  const resumableSessions = useMemo(
-    function () {
-      const onPause = sessionData.filter((session) =>
-        ["Pause", "PartialStop"].includes(session.session_status)
-      );
-      const pendingStart = sessionData.filter(
-        (session) => session.session_status === "Start"
-      );
-      const partialStopped = sessionData.filter(
-        (session) => session.session_status === "PartialStop"
-      );
-      const stopped = sessionData.filter(
-        (session) => session.session_status === "Stop"
-      );
-      const actionType = /**@type {const} */ (
-        onPause.length > 0 ? "Resume" : "Start"
-      );
-      return { onPause, pendingStart, partialStopped, stopped, actionType };
-    },
-    [savedSessions, sessionData]
-  );
+				const {
+					analyses: {
+						category_analyses,
+						sector_analyses,
+						overall_sector_scores,
+					},
+					overall_score,
+				} = firstSorted;
+				return {
+					category_analyses,
+					sector_analyses,
+					overall_sector_scores,
+					overall_score,
+				};
+			}
+			return {};
+		},
+		[sessionData]
+	);
 
-  const stoppedSessionsWithAnalysis = useMemo(
-    function () {
-      const stopped = sessionData.filter(
-        (session) =>
-          session.session_status === "Stop" ||
-          session.session_status === "PartialStop"
-      );
-      if (stopped.length > 0) {
-        const firstSorted = stopped.sort(
-          (a, b) => new Date(b.session_date) - new Date(a.session_date)
-        )[0];
+	// Question and Answer Handling
+	const getCurrentSectorQuestions = () => {
+		return questions.filter((q) => q.sector === sectors[currentSector]);
+	};
 
-        const {
-          analyses: {
-            category_analyses,
-            sector_analyses,
-            overall_sector_scores,
-          },
-          overall_score,
-        } = firstSorted;
-        return {
-          category_analyses,
-          sector_analyses,
-          overall_sector_scores,
-          overall_score,
-        };
-      }
-      return {};
-    },
-    [sessionData]
-  );
+	const handleAnswerChange = (questionId, value) => {
+		setAnswers((prev) => ({
+			...prev,
+			[questionId]: {
+				answer: value,
+			},
+		}));
+	};
+	/**
+	 *
+	 * @param {React.ChangeEvent<HTMLInputElement>} event
+	 * @returns
+	 */
+	const handleQuestionFileChange = (event) => {
+		const inputName = event.target.name;
+		const file = event.target.files[0];
+		const reader = new FileReader();
+		reader.onload = function () {
+			setQuestionFiles((prev) => ({
+				...prev,
+				[inputName]: reader.result,
+			}));
+		};
+		reader.readAsDataURL(file);
+	};
 
-  // Question and Answer Handling
-  const getCurrentSectorQuestions = () => {
-    return questions.filter((q) => q.sector === sectors[currentSector]);
-  };
+	const handleSubmit = async () => {
+		setIsLoading(true);
+		try {
+			// Validate all questions are answered
+			const sectorQuestions = getCurrentSectorQuestions();
+			// const unansweredQuestions = sectorQuestions.filter((q) => !answers[q.id]);
 
-  const handleAnswerChange = (questionId, value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: {
-        answer: value,
-      },
-    }));
-  };
-  /**
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event
-   * @returns
-   */
-  const handleQuestionFileChange = (event) => {
-    const inputName = event.target.name;
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function () {
-      setQuestionFiles((prev) => ({
-        ...prev,
-        [inputName]: reader.result,
-      }));
-    };
-    reader.readAsDataURL(file);
-  };
+			// if (unansweredQuestions.length > 0) {
+			//   alert("Please answer all questions before submitting.");
+			//   setIsLoading(false);
+			//   return;
+			// }
+			const atLeastOneAnswered = sectorQuestions.some((q) => answers[q.id]);
+			if (!atLeastOneAnswered) {
+				alert(
+					"Please answer at least one question in this section before submitting."
+				);
+				setIsLoading(false);
+				return;
+			}
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    try {
-      // Validate all questions are answered
-      const sectorQuestions = getCurrentSectorQuestions();
-      // const unansweredQuestions = sectorQuestions.filter((q) => !answers[q.id]);
+			await updateSessionStatus(
+				sessionId,
+				currentUpdatableSessionStatus.status
+			);
 
-      // if (unansweredQuestions.length > 0) {
-      //   alert("Please answer all questions before submitting.");
-      //   setIsLoading(false);
-      //   return;
-      // }
-      const atLeastOneAnswered = sectorQuestions.some((q) => answers[q.id]);
-      if (!atLeastOneAnswered) {
-        alert(
-          "Please answer at least one question in this section before submitting."
-        );
-        setIsLoading(false);
-        return;
-      }
+			const formattedAnswers = Object.entries(answers)
+				.map(([question_id, details]) => ({
+					question_id,
+					selected_choice_id: details.answer,
+					uploaded_file: questionFiles?.[question_id] ?? null,
+				}))
+				.map(({ uploaded_file, ...rest }) =>
+					uploaded_file ? { ...rest, uploaded_file } : rest
+				);
+			/**@type {import("axios").AxiosResponse<import("@/types").SubmitSectorQuizResponseType,>} */
+			const response = await privateAPI.post(
+				`/api/session/${sessionId}/responses/`,
+				{
+					session_id: sessionId,
+					session_status: "PartialStop",
+					answers: formattedAnswers,
+				}
+			);
+			const data = response.data;
 
-      await updateSessionStatus(
-        sessionId,
-        currentUpdatableSessionStatus.status
-      );
+			if (!isResponseOk(response)) throw new Error("Failed to submit answers");
 
-      const formattedAnswers = Object.entries(answers)
-        .map(([question_id, details]) => ({
-          question_id,
-          selected_choice_id: details.answer,
-          uploaded_file: questionFiles?.[question_id] ?? null,
-        }))
-        .map(({ uploaded_file, ...rest }) =>
-          uploaded_file ? { ...rest, uploaded_file } : rest
-        );
-      /**@type {import("axios").AxiosResponse<import("@/types").SubmitSectorQuizResponseType,>} */
-      const response = await privateAPI.post(
-        `/api/session/${sessionId}/responses/`,
-        {
-          session_id: sessionId,
-          session_status: "PartialStop",
-          answers: formattedAnswers,
-        }
-      );
-      const data = response.data;
+			const newImplementationData = {
+				finance: calculateSectorScore(
+					answers,
+					"Financial",
+					"Implementation Capacity",
+					sectorQuestions
+				),
+				technical: calculateSectorScore(
+					answers,
+					"Technical",
+					"Implementation Capacity",
+					sectorQuestions
+				),
+				governance: calculateSectorScore(
+					answers,
+					"Governance",
+					"Implementation Capacity",
+					sectorQuestions
+				),
+				monitoring: calculateSectorScore(
+					answers,
+					"Monitoring",
+					"Implementation Capacity",
+					sectorQuestions
+				),
+			};
 
-      if (!isResponseOk(response)) throw new Error("Failed to submit answers");
+			const newDevelopmentData = {
+				finance: calculateSectorScore(
+					answers,
+					"Financial",
+					"Development Capacity",
+					sectorQuestions
+				),
+				technical: calculateSectorScore(
+					answers,
+					"Technical",
+					"Development Capacity",
+					sectorQuestions
+				),
+				governance: calculateSectorScore(
+					answers,
+					"Governance",
+					"Development Capacity",
+					sectorQuestions
+				),
+				monitoring: calculateSectorScore(
+					answers,
+					"Monitoring",
+					"Development Capacity",
+					sectorQuestions
+				),
+			};
+			const sampleSectorsReduced = sectors.reduce((ac, curr) => {
+				ac[curr] = {
+					score: "No Data",
+					label: "No Data",
+				};
+				return ac;
+			}, {});
+			const formulated = {
+				implementation: sampleSectorsReduced,
+				development: sampleSectorsReduced,
+			};
+			// console.log({ formulated });
 
-      const newImplementationData = {
-        finance: calculateSectorScore(
-          answers,
-          "Financial",
-          "Implementation Capacity",
-          sectorQuestions
-        ),
-        technical: calculateSectorScore(
-          answers,
-          "Technical",
-          "Implementation Capacity",
-          sectorQuestions
-        ),
-        governance: calculateSectorScore(
-          answers,
-          "Governance",
-          "Implementation Capacity",
-          sectorQuestions
-        ),
-        monitoring: calculateSectorScore(
-          answers,
-          "Monitoring",
-          "Implementation Capacity",
-          sectorQuestions
-        ),
-      };
+			Object.keys(formulated).forEach((key) => {
+				const { sector_analyses, overall_sector_scores } =
+					data.session.analyses;
+				sector_analyses.forEach((sec) => {
+					// console.log({key,sec});
 
-      const newDevelopmentData = {
-        finance: calculateSectorScore(
-          answers,
-          "Financial",
-          "Development Capacity",
-          sectorQuestions
-        ),
-        technical: calculateSectorScore(
-          answers,
-          "Technical",
-          "Development Capacity",
-          sectorQuestions
-        ),
-        governance: calculateSectorScore(
-          answers,
-          "Governance",
-          "Development Capacity",
-          sectorQuestions
-        ),
-        monitoring: calculateSectorScore(
-          answers,
-          "Monitoring",
-          "Development Capacity",
-          sectorQuestions
-        ),
-      };
-      const sampleSectorsReduced = sectors.reduce((ac, curr) => {
-        ac[curr] = {
-          score: "No Data",
-          label: "No Data",
-        };
-        return ac;
-      }, {});
-      const formulated = {
-        implementation: sampleSectorsReduced,
-        development: sampleSectorsReduced,
-      };
-      // console.log({ formulated });
-
-      Object.keys(formulated).forEach((key) => {
-        const { sector_analyses, overall_sector_scores } =
-          data.session.analyses;
-        sector_analyses.forEach((sec) => {
-          // console.log({key,sec});
-
-          const [category, sector] = sec.sector.split(" - ");
-          const sectorCategory = category.split(" ")[0].toLowerCase();
-          if (sectorCategory.includes(key)) {
-            let Obj = {
-              score: sec.score,
-              label: sec.label,
+					const [category, sector] = sec.sector.split(" - ");
+					const sectorCategory = category.split(" ")[0].toLowerCase();
+					if (sectorCategory.includes(key)) {
+						let Obj = {
+							score: sec.score,
+							label: sec.label,
 							sector: sector,
-            };
-            const existingRecommendation = overall_sector_scores.find(
-              (sec_) => sec_.sector.toLowerCase() === sector.toLowerCase()
-            );
-            // console.log({
-            //   doesSectorHaveRecomendation: existingRecommendation,
-            //   overall_sector_scores,
-            //   sec,
-            // });
+						};
+						const existingRecommendation = overall_sector_scores.find(
+							(sec_) => sec_.sector.toLowerCase() === sector.toLowerCase()
+						);
+						// console.log({
+						//   doesSectorHaveRecomendation: existingRecommendation,
+						//   overall_sector_scores,
+						//   sec,
+						// });
 
-            if (existingRecommendation) {
-              Obj["recommendation"] = existingRecommendation.recommendations;
-            }
-            // formulated[key][sector] =
-            Object.assign(formulated[key], { [sector]: Obj });
-          }
-        });
-      });
+						if (existingRecommendation) {
+							Obj["recommendation"] = existingRecommendation.recommendations;
+						}
+						// formulated[key][sector] =
+						Object.assign(formulated[key], { [sector]: Obj });
+					}
+				});
+			});
 
-      // console.log({ formulated });
+			// console.log({ formulated });
 
-      // setImplementationData(newImplementationData);
-      // setDevelopmentData(newDevelopmentData);
-      setSectorResponseAnswers(formulated);
-      setShowModal(false);
-      setShowResults(true);
-    } catch (error) {
-      console.error("Error submitting answers:", error);
-      alert("Failed to submit answers. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+			// setImplementationData(newImplementationData);
+			// setDevelopmentData(newDevelopmentData);
+			setSectorResponseAnswers(formulated);
+			setShowModal(false);
+			setShowResults(true);
+		} catch (error) {
+			console.error("Error submitting answers:", error);
+			alert("Failed to submit answers. Please try again.");
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
-  const handleSaveProgress = async () => {
-    try {
-      await updateSessionStatus(sessionId, "Pause");
+	const handleSaveProgress = async () => {
+		try {
+			await updateSessionStatus(sessionId, "Pause");
 
-      const formattedAnswers = Object.entries(answers).map(
-        ([question_id, details]) => ({
-          question_id,
-          selected_choice_id: details.answer,
-        })
-      );
+			const formattedAnswers = Object.entries(answers).map(
+				([question_id, details]) => ({
+					question_id,
+					selected_choice_id: details.answer,
+				})
+			);
 
-      const response = await privateAPI.post(
-        `/api/session/${sessionId}/responses/`,
-        {
-          session_id: sessionId,
-          session_status: "Pause",
-          answers: formattedAnswers,
-        }
-      );
+			const response = await privateAPI.post(
+				`/api/session/${sessionId}/responses/`,
+				{
+					session_id: sessionId,
+					session_status: "Pause",
+					answers: formattedAnswers,
+				}
+			);
 
-      if (!isResponseOk(response)) throw new Error("Failed to save progress");
-      alert("Progress saved successfully!");
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error saving progress:", error);
-      alert("Failed to save progress. Please try again.");
-    }
-  };
+			if (!isResponseOk(response)) throw new Error("Failed to save progress");
+			alert("Progress saved successfully!");
+			setShowModal(false);
+		} catch (error) {
+			console.error("Error saving progress:", error);
+			alert("Failed to save progress. Please try again.");
+		}
+	};
 
-  //RESUME SESSION
-  const handleResumeProgress = async () => {
-    try {
-      await updateSessionStatus("Pause");
+	//RESUME SESSION
+	const handleResumeProgress = async () => {
+		try {
+			await updateSessionStatus("Pause");
 
-      const formattedAnswers = Object.entries(answers).map(
-        ([question_id, details]) => ({
-          question_id,
-          selected_choice_id: details.answer,
-        })
-      );
+			const formattedAnswers = Object.entries(answers).map(
+				([question_id, details]) => ({
+					question_id,
+					selected_choice_id: details.answer,
+				})
+			);
 
-      const response = await privateAPI.post(
-        `/api/session/${sessionId}/responses/`,
-        {
-          session_id: sessionId,
-          session_status: "Resume",
-          answers: formattedAnswers,
-        }
-      );
+			const response = await privateAPI.post(
+				`/api/session/${sessionId}/responses/`,
+				{
+					session_id: sessionId,
+					session_status: "Resume",
+					answers: formattedAnswers,
+				}
+			);
 
-      if (!response.ok) throw new Error("Failed to Resume progress");
-      alert("Progress Resumed successfully!");
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error resuming progress:", error);
-      alert("Failed to Resume progress. Please try again.");
-    }
-  };
-  //RESUME SESSION
+			if (!response.ok) throw new Error("Failed to Resume progress");
+			alert("Progress Resumed successfully!");
+			setShowModal(false);
+		} catch (error) {
+			console.error("Error resuming progress:", error);
+			alert("Failed to Resume progress. Please try again.");
+		}
+	};
+	//RESUME SESSION
 
-  const barChartData = (type) => {
-    const data =
-      type === "implementation" ? implementationData : developmentData;
-    const ratingValues = Object.values(data).map((rating) =>
-      ratingToNumber(rating)
-    );
+	const barChartData = (type) => {
+		const data =
+			type === "implementation" ? implementationData : developmentData;
+		const ratingValues = Object.values(data).map((rating) =>
+			ratingToNumber(rating)
+		);
 
-    return {
-      labels: ["Finance", "Technical", "Governance", "M&E"],
-      datasets: [
-        {
-          data: ratingValues,
-          backgroundColor: "#3B82F6",
-          borderRadius: 6,
-          label: "Rating",
-        },
-      ],
-    };
-  };
-  const sectorCapacityData = useMemo(() => {
-    const { sector_analyses: data } = stoppedSessionsWithAnalysis;
-    if (!data || !Array.isArray(data) || data.length === 0) return {};
+		return {
+			labels: ["Finance", "Technical", "Governance", "M&E"],
+			datasets: [
+				{
+					data: ratingValues,
+					backgroundColor: "#3B82F6",
+					borderRadius: 6,
+					label: "Rating",
+				},
+			],
+		};
+	};
+	const sectorCapacityData = useMemo(() => {
+		const { sector_analyses: data } = stoppedSessionsWithAnalysis;
+		if (!data || !Array.isArray(data) || data.length === 0) return {};
 
-    const processedData = data
-      .map((item) => {
-        const [sType, sector] = item.sector.split(" - ");
-        return {
-          sector: sector.trim(),
-          type: sType.trim(),
-          score: parseFloat(item.score),
-          label: item.label,
-        };
-      })
-      .reduce(
-        (acc, item) => {
-          if (!acc[item.sector]) {
-            acc[item.sector] = {
-              implementation: { score: "No Data", label: "No Data" },
-              development: { score: "No Data", label: "No Data" },
-            };
-          }
+		const processedData = data
+			.map((item) => {
+				const [sType, sector] = item.sector.split(" - ");
+				return {
+					sector: sector.trim(),
+					type: sType.trim(),
+					score: parseFloat(item.score),
+					label: item.label,
+				};
+			})
+			.reduce(
+				(acc, item) => {
+					if (!acc[item.sector]) {
+						acc[item.sector] = {
+							implementation: { score: "No Data", label: "No Data" },
+							development: { score: "No Data", label: "No Data" },
+						};
+					}
 
-          const typeKey = item.type.toLowerCase().includes("implementation")
-            ? "implementation"
-            : "development";
+					const typeKey = item.type.toLowerCase().includes("implementation")
+						? "implementation"
+						: "development";
 
-          acc[item.sector][typeKey] = {
-            score: item.score,
-            label: item.label,
-          };
+					acc[item.sector][typeKey] = {
+						score: item.score,
+						label: item.label,
+					};
 
-          return acc;
-        },
-        {
-          Financial: {
-            implementation: { score: "No Data", label: "No Data" },
-            development: { score: "No Data", label: "No Data" },
-            Icon: ChartBar,
-          },
-          Technical: {
-            implementation: { score: "No Data", label: "No Data" },
-            development: { score: "No Data", label: "No Data" },
-            Icon: Settings,
-          },
-          Governance: {
-            implementation: { score: "No Data", label: "No Data" },
-            development: { score: "No Data", label: "No Data" },
-            Icon: ClipboardList,
-          },
-          "Monitoring and Evaluation": {
-            implementation: { score: "No Data", label: "No Data" },
-            development: { score: "No Data", label: "No Data" },
-            Icon: Activity,
-          },
-        }
-      );
+					return acc;
+				},
+				{
+					Financial: {
+						implementation: { score: "No Data", label: "No Data" },
+						development: { score: "No Data", label: "No Data" },
+						Icon: ChartBar,
+					},
+					Technical: {
+						implementation: { score: "No Data", label: "No Data" },
+						development: { score: "No Data", label: "No Data" },
+						Icon: Settings,
+					},
+					Governance: {
+						implementation: { score: "No Data", label: "No Data" },
+						development: { score: "No Data", label: "No Data" },
+						Icon: ClipboardList,
+					},
+					"Monitoring and Evaluation": {
+						implementation: { score: "No Data", label: "No Data" },
+						development: { score: "No Data", label: "No Data" },
+						Icon: Activity,
+					},
+				}
+			);
 
-    return processedData;
-  }, [sessionData]);
+		return processedData;
+	}, [sessionData]);
 
-  const structuredData = useMemo(() => {
-    const { sector_analyses: data } = stoppedSessionsWithAnalysis;
-    if (!data || !Array.isArray(data) || data.length === 0) return {};
-    const initialStructure = {
-      development: {
-        "Monitoring and Evaluation": {
-          score: "No Data",
-          label: "No Data",
-          Icon: Activity,
-        },
-        Technical: { score: "No Data", label: "No Data", Icon: Settings },
-        Governance: {
-          score: "No Data",
-          label: "No Data",
-          Icon: ClipboardList,
-        },
-        Financial: { score: "No Data", label: "No Data", Icon: ChartBar },
-      },
-      implementation: {
-        "Monitoring and Evaluation": {
-          score: "No Data",
-          label: "No Data",
-          Icon: Activity,
-        },
-        Technical: { score: "No Data", label: "No Data", Icon: Settings },
-        Governance: {
-          score: "No Data",
-          label: "No Data",
-          Icon: ClipboardList,
-        },
-        Financial: { score: "No Data", label: "No Data", Icon: ChartBar },
-      },
-    };
+	const structuredData = useMemo(() => {
+		const { sector_analyses: data } = stoppedSessionsWithAnalysis;
+		if (!data || !Array.isArray(data) || data.length === 0) return {};
+		const initialStructure = {
+			development: {
+				"Monitoring and Evaluation": {
+					score: "No Data",
+					label: "No Data",
+					Icon: Activity,
+				},
+				Technical: { score: "No Data", label: "No Data", Icon: Settings },
+				Governance: {
+					score: "No Data",
+					label: "No Data",
+					Icon: ClipboardList,
+				},
+				Financial: { score: "No Data", label: "No Data", Icon: ChartBar },
+			},
+			implementation: {
+				"Monitoring and Evaluation": {
+					score: "No Data",
+					label: "No Data",
+					Icon: Activity,
+				},
+				Technical: { score: "No Data", label: "No Data", Icon: Settings },
+				Governance: {
+					score: "No Data",
+					label: "No Data",
+					Icon: ClipboardList,
+				},
+				Financial: { score: "No Data", label: "No Data", Icon: ChartBar },
+			},
+		};
 
-    return data.reduce((acc, item) => {
-      const [sType, sector] = item.sector.split(" - ");
-      const typeKey = sType.toLowerCase().includes("implementation")
-        ? "implementation"
-        : "development";
+		return data.reduce((acc, item) => {
+			const [sType, sector] = item.sector.split(" - ");
+			const typeKey = sType.toLowerCase().includes("implementation")
+				? "implementation"
+				: "development";
 
-      if (!acc[typeKey][sector.trim()]) {
-        // In case sectors are dynamic
-        acc[typeKey][sector.trim()] = {
-          score: "No Data",
-          label: "No Data",
-          Icon: null,
-        };
-      }
+			if (!acc[typeKey][sector.trim()]) {
+				// In case sectors are dynamic
+				acc[typeKey][sector.trim()] = {
+					score: "No Data",
+					label: "No Data",
+					Icon: null,
+				};
+			}
 
-      acc[typeKey][sector.trim()] = {
-        score: parseFloat(item.score),
-        label: item.label,
-        Icon: acc[typeKey][sector.trim()].Icon, // Preserve existing icon if present
-      };
+			acc[typeKey][sector.trim()] = {
+				score: parseFloat(item.score),
+				label: item.label,
+				Icon: acc[typeKey][sector.trim()].Icon, // Preserve existing icon if present
+			};
 
-      return acc;
-    }, initialStructure);
-  }, [sessionData]);
+			return acc;
+		}, initialStructure);
+	}, [sessionData]);
 
-  // Data fetching effect
-  useEffect(() => {
-    fetchData();
-    fetchHistoricalData();
-  }, []);
-  // console.log({ sessionData });
-  // console.log({scoreCardData});
-  const state = {
-    handleQuestionFileChange,
-    questionFiles,
-    selectedSection,
-    setSelectedSection,
-    showModal,
-    setShowModal,
-    questions,
-    setQuestions,
-    answers,
-    setAnswers,
-    isLoading,
-    setIsLoading,
-    scorecardData: scoreCardData,
-    setScorecardData: setScoreCardData,
-    sessionData,
-    setSessionData,
-    showResults,
-    setShowResults,
-    currentSector,
-    setCurrentSector,
-    currentGraphIndex,
-    setCurrentGraphIndex,
-    sessionId,
-    setSessionId,
-    sessionStatus,
-    setSessionStatus,
-    savedSessions,
-    setSavedSessions,
-    showSavedSessions,
-    setShowSavedSessions,
-    sectors,
-    isLastSector,
-    implementationData,
-    setImplementationData,
-    developmentData,
-    setDevelopmentData,
-    lineChartOptions,
-    barChartOptions,
-    handleResumeSession,
-    handleCreateSession,
-    resumableSessions,
-    stoppedSessionsWithAnalysis,
-    getCurrentSectorQuestions,
-    handleAnswerChange,
-    handleSubmit,
-    handleSaveProgress,
-    handleResumeProgress,
-    barChartData,
-    sectorCapacityData,
-    structuredData,
-    historicalData,
-    setHistoricalData,
-    handleSectorChange,
-    questionAnswerCheck,
-    currentUpdatableSessionStatus,
-    cumulativeData,
-    sectorResponseAnswers,
-    setSectorResponseAnswers,
-  };
-  return (
-    <DashboardContext.Provider value={state}>
-      {children}
-    </DashboardContext.Provider>
-  );
+	// Data fetching effect
+	useEffect(() => {
+		fetchData();
+		fetchHistoricalData();
+	}, []);
+
+	const state = {
+		handleQuestionFileChange,
+		questionFiles,
+		selectedSection,
+		setSelectedSection,
+		showModal,
+		setShowModal,
+		questions,
+		// setQuestions,
+		answers,
+		setAnswers,
+		isLoading,
+		setIsLoading,
+		scoreCardData,
+		setScoreCardData,
+		sessionData,
+		setSessionData,
+		showResults,
+		setShowResults,
+		currentSector,
+		setCurrentSector,
+		currentGraphIndex,
+		setCurrentGraphIndex,
+		sessionId,
+		setSessionId,
+		sessionStatus,
+		setSessionStatus,
+		savedSessions,
+		setSavedSessions,
+		showSavedSessions,
+		setShowSavedSessions,
+		sectors,
+		isLastSector,
+		implementationData,
+		setImplementationData,
+		developmentData,
+		setDevelopmentData,
+		lineChartOptions,
+		barChartOptions,
+		handleResumeSession,
+		handleCreateSession,
+		resumableSessions,
+		stoppedSessionsWithAnalysis,
+		getCurrentSectorQuestions,
+		handleAnswerChange,
+		handleSubmit,
+		handleSaveProgress,
+		handleResumeProgress,
+		barChartData,
+		sectorCapacityData,
+		structuredData,
+		historicalData,
+		setHistoricalData,
+		handleSectorChange,
+		questionAnswerCheck,
+		currentUpdatableSessionStatus,
+		cumulativeData,
+		sectorResponseAnswers,
+		setSectorResponseAnswers,
+		currentSectorCategory,
+		setCurrentSectorCategory,
+	};
+	return (
+		<DashboardContext.Provider value={state}>
+			{children}
+		</DashboardContext.Provider>
+	);
 };
 
 const useDashboardData = () => {
-  const state = useContext(DashboardContext);
-  return state;
+	const state = useContext(DashboardContext);
+	return state;
 };
 
 export { DashboardProvider, useDashboardData };

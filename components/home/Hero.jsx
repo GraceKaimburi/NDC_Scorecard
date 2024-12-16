@@ -75,7 +75,7 @@ const HeroSection = () => {
 
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8 px-4">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-          <span>Your Guide to assessing progress in the development and implementation of NDCs</span>
+          <span>Track your Country&apos;s capacity to develop and implement NDC&apos;s for climate commitments.</span>
           <span className="text-white">
             {currentText}
             {/* <span className="animate-pulse inline-block align-bottom">|</span> */}
@@ -83,7 +83,7 @@ const HeroSection = () => {
         </h1>
 
         <p className="text-xl md:text-2xl text-white/80">
-          Track your Country&apos;s capacity to develop and implement NDC&apos;s for climate commitments.
+          Your Guide to assessing progress in the development and implementation of NDCs
         </p>
       </div>
 

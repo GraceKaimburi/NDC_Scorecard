@@ -20,11 +20,9 @@ import { transformResourceLinksToSelectOptions } from "@/data/resource-links";
 const ResultsModal = () => {
 	const {
 		showResults: isOpen,
-		answers: results,
-		implementationData,
-		developmentData,
 		setShowResults,
 		sectorResponseAnswers,
+		currentSectorCategory,
 	} = useDashboardData();
 	const onClose = () => setShowResults(false);
 
@@ -96,7 +94,8 @@ const ResultsModal = () => {
 	if (!isOpen) return null;
 	// console.log({ sectorsWithRecommendations });
 	// convert
-
+	const filterValidRecommendations = (recom) =>
+		new RegExp(currentSectorCategory, "igm").test(recom);
 	return (
 		<AnimatePresence>
 			<motion.div
@@ -128,32 +127,34 @@ const ResultsModal = () => {
 							([parentKey, parentValue]) => {
 								// const
 								return (
-									<div className="mb-8" key={parentKey}>
-										<h3 className="text-lg font-semibold mb-4 flex items-center">
-											<FiBarChart2 className="mr-2 text-blue-500" />
-											{capitalize(parentKey)} Capacity
-										</h3>
-										<div className="grid grid-cols-2 gap-4">
-											{Object.entries(parentValue).map(
-												([key, value]) =>
-													value.label !== "No Data" && (
-														<div
-															key={key}
-															className="flex items-center justify-between p-3 bg-gray-50 rounded"
-														>
-															<span className="capitalize">{key}</span>
-															<span
-																className={`font-medium ${getRatingColor(
-																	value.label
-																)}`}
+									parentKey === currentSectorCategory && (
+										<div className="mb-8" key={parentKey}>
+											<h3 className="text-lg font-semibold mb-4 flex items-center">
+												<FiBarChart2 className="mr-2 text-blue-500" />
+												{capitalize(parentKey)} Capacity
+											</h3>
+											<div className="grid grid-cols-2 gap-4">
+												{Object.entries(parentValue).map(
+													([key, value]) =>
+														value.label !== "No Data" && (
+															<div
+																key={key}
+																className="flex items-center justify-between p-3 bg-gray-50 rounded"
 															>
-																{value.label}
-															</span>
-														</div>
-													)
-											)}
+																<span className="capitalize">{key}</span>
+																<span
+																	className={`font-medium ${getRatingColor(
+																		value.label
+																	)}`}
+																>
+																	{value.label}
+																</span>
+															</div>
+														)
+												)}
+											</div>
 										</div>
-									</div>
+									)
 								);
 							}
 						)}
@@ -183,12 +184,14 @@ const ResultsModal = () => {
 						<div className="flex  mb-8">
 							{computedRecommendations.length > 0 && (
 								<ul className="flex  gap-2 flex-col list-disc">
-									{computedRecommendations.map((item, index) => (
-										<li key={index} className="flex items-center gap-1">
-											{/* <FiStar className="text-yellow-500" /> */}
-											<small>{item}</small>
-										</li>
-									))}
+									{computedRecommendations
+										.filter(filterValidRecommendations)
+										.map((item, index) => (
+											<li key={index} className="flex items-center gap-1">
+												{/* <FiStar className="text-yellow-500" /> */}
+												<small>{item}</small>
+											</li>
+										))}
 								</ul>
 							)}
 						</div>

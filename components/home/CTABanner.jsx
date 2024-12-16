@@ -18,9 +18,9 @@ const CTABanner = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h1 className="text-gray-900 mb-0 font-bold text-4xl md:text-5xl lg:text-[30px] text-center">
+            {/* <h1 className="text-gray-900 mb-0 font-bold text-4xl md:text-5xl lg:text-[30px] text-center">
               Start tracking and improving your country&apos;s climate commitments today.
-            </h1>
+            </h1> */}
 
           </motion.div>
           
@@ -37,7 +37,7 @@ const CTABanner = () => {
           >
             <Link 
               href="/register" 
-              className="inline-flex items-center px-6 py-3 bg-blue-500 text-white font-medium text-sm rounded-lg hover:bg-blue-600 transition-colors duration-200"
+              className="inline-flex items-center px-12 py-6 bg-blue-500 text-white font-medium text-sm rounded-lg hover:bg-blue-600 transition-colors duration-200"
             >
               <motion.span
                 initial={{ opacity: 0, x: 10 }}
