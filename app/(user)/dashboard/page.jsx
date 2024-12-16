@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import ResultsModal from "@/components/Results";
 import {
   Chart as ChartJS,
@@ -36,50 +36,7 @@ ChartJS.register(
 const Dashboard = () => {
   const dsData = useDashboardData();
 
-  // const cumulativeData = [
-  //   {
-  //     category: "Finance",
-  //     value:
-  //       ratingToNumber(implementationData.finance) +
-  //       ratingToNumber(developmentData.finance),
-  //     displayRating: numberToRating(
-  //       ratingToNumber(implementationData.finance) +
-  //         ratingToNumber(developmentData.finance)
-  //     ),
-  //   },
-  //   {
-  //     category: "Technical",
-  //     value:
-  //       ratingToNumber(implementationData.technical) +
-  //       ratingToNumber(developmentData.technical),
-  //     displayRating: numberToRating(
-  //       ratingToNumber(implementationData.technical) +
-  //         ratingToNumber(developmentData.technical)
-  //     ),
-  //   },
-  //   {
-  //     category: "Governance",
-  //     value:
-  //       ratingToNumber(implementationData.governance) +
-  //       ratingToNumber(developmentData.governance),
-  //     displayRating: numberToRating(
-  //       ratingToNumber(implementationData.governance) +
-  //         ratingToNumber(developmentData.governance)
-  //     ),
-  //   },
-  //   {
-  //     category: "M&E",
-  //     value:
-  //       ratingToNumber(implementationData.monitoring) +
-  //       ratingToNumber(developmentData.monitoring),
-  //     displayRating: numberToRating(
-  //       ratingToNumber(implementationData.monitoring) +
-  //         ratingToNumber(developmentData.monitoring)
-  //     ),
-  //   },
-  // ];
 
-  // Main return statement with all components
   return (
     <AuthMiddleware>
       <motion.div
@@ -89,34 +46,21 @@ const Dashboard = () => {
         className="min-h-screen bg-gray-50 p-6"
       >
         <MaxWidth>
+
           <DashboardHeader />
 
           <AnimatePresence mode="wait">
             {dsData.selectedSection ? (
               <DetailedView key="detailed" type={dsData.selectedSection} />
             ) : (
-              <MainDashboard
-                // sessionData={sessionData}
-                // stoppedSessionsWithAnalysis={stoppedSessionsWithAnalysis}
-                key="main"
-              />
+              <MainDashboard key="main" />
             )}
           </AnimatePresence>
 
           <QuestionModal />
           <SavedSessionsModal />
-          {/* <RecommendationSection
-          implementationData={implementationData}
-          developmentData={developmentData}
-        /> */}
 
-          <ResultsModal
-          // isOpen={showResults}
-          // onClose={() => setShowResults(false)}
-          // results={answers}
-          // implementationData={implementationData}
-          // developmentData={developmentData}
-          />
+          <ResultsModal />
 
           {dsData.isLoading && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
