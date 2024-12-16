@@ -18,9 +18,10 @@ const CTABanner = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <p className="text-gray-900 mb-0 font-semibold">
+            <h1 className="text-gray-900 mb-0 font-bold text-4xl md:text-5xl lg:text-[30px] text-center">
               Start tracking and improving your country&apos;s climate commitments today.
-            </p>
+            </h1>
+
           </motion.div>
           
           <motion.div

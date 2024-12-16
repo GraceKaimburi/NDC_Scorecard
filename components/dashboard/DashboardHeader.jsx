@@ -49,8 +49,15 @@ export const DashboardHeader = () => {
             whileTap={{ scale: 0.95 }}
             onClick={resume}
             className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50"
+            tour-selector="resume-assessment"
+          >
+            <motion.span
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 2, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
             Resume Assessment
+            </motion.span>
           </motion.button>
         ) : (
           <motion.button
@@ -61,9 +68,17 @@ export const DashboardHeader = () => {
               handleCreateSession();
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            tour-selector="new-assessment"
+          >
+            <motion.span
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 2, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
             New Assessment
+            </motion.span>
           </motion.button>
+        
         )}
       </div>
     </motion.header>

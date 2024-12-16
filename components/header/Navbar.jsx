@@ -80,9 +80,14 @@ const Navbar = () => {
     <nav className="fixed w-full z-[999999] bg-white shadow-sm shadow-gray-400 flex items-center  px-6 py-5 font-poppins h-12">
       <MaxWidth className={"flex justify-between items-center w-full bg-white "}>
         <div>
-          <h1 className="font-bold text-xs sm:text-sm md:text-md text-blue-600">
-            NDC Capacity Scorecard
-          </h1>
+        <Link 
+        href="/" 
+        className="block"
+      >
+        <h1 className="font-bold text-xs sm:text-sm md:text-md text-blue-600">
+          NDC Capacity Scorecard
+        </h1>
+      </Link>
         </div>
 
         <div className="flex gap-4 items-center">

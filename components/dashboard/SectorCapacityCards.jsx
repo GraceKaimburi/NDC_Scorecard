@@ -69,8 +69,11 @@ export const SectorCapacityCards = ({ data }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white p-4 rounded-lg shadow-lg"
+                // layoutId=""
               >
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-3"
+                tour-selector="capacity-card"
+                >
                   <Icon className="w-5 h-5 text-blue-500" />
                   <h3 className="text-lg font-semibold">
                     {sectorKey === "Monitoring and Evaluation"

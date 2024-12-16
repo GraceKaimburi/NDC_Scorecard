@@ -7,21 +7,61 @@ import { ChevronLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { motion } from "framer-motion";
-import { getSectorGraphs } from "./getSectorGraphs";
+import { GetSectorGraphs } from "./getSectorGraphs";
+import moment from "moment";
 
 export default function DetailedView() {
   const { privateAPI } = useFetch();
+  /**@type {import("@/types/react").ReactUseStateType<import("@/types").SessionDataType[]>} */
   const [historicalData, setHistoricalData] = useState([]);
   const {
-    selectedSection: type,
+    selectedSection,
     sectors,
     currentGraphIndex,
     lineChartOptions,
     setCurrentGraphIndex,
     barChartData,
-    barChartOptions,
+    // barChartOptions,
   } = useDashboardData();
-  // const detailedData = getDetailedData(type);
+  // const detailedData = getDetailedData(selectedSection);
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 50,
+        ticks: {
+          stepSize: 1,
+
+        },
+      },
+      x: {
+        grid: {
+          display: true,
+
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+      // tooltip: {
+      //   callbacks: {
+      //     label: function (context) {
+      //       console.log({ context });
+
+      //       const dataIndex = context.dataIndex;
+      //       // return `Rating: ${context.dataset.data[dataIndex].label}`;
+      //       const dataset = context.chart.data.labels[dataIndex];
+      //       const dataValue = context.dataset.data[dataIndex];
+      //       return dataset ? `Rating: ${dataValue}` : "";
+      //     },
+      //   },
+      // },
+    },
+  };
 
   useEffect(() => {
     const fetchHistoricalData = async () => {
@@ -37,11 +77,13 @@ export default function DetailedView() {
 
         // Check if data exists and has the expected structure
         if (data && Array.isArray(data)) {
-          const formatted = data
-          .filter(({ session_status }) => session_status === "Stop")
-          .map(({sector_analyses}) => sector_analyses || {});
+          const formatted = data.filter(({ session_status }) =>
+            ["Stop", "PartialStop"].includes(session_status)
+          );
+          // .map(({sector_analyses}) => sector_analyses || {});
           // Access the analysis field correctly
           console.log("Data structure is valid:", { formatted });
+          if (formatted.length === 0) return setHistoricalData([]);
           setHistoricalData(formatted);
         } else {
           console.error("Invalid data structure received:", data);
@@ -54,17 +96,61 @@ export default function DetailedView() {
     };
 
     fetchHistoricalData();
-  }, [type]);
+  }, [selectedSection]);
   const barchatInfo = useMemo(() => {
-    return barChartData(type);
-    // return {
-    //   labels: Array.isArray(labels) ? labels : [],
-    //   data_sets: Array.isArray(data_sets) ? data_sets : [],
-    // };
-  }, [type]);
+    if (!historicalData.length)
+      return {
+        analysis: [],
+        currentAnalysis: {
+          labels: [],
+          datasets: [
+            {
+              label: "",
+              data: [],
+              backgroundColor: "#3B82F6",
+              borderRadius: 6,
+            },
+          ],
+        },
+      };
+    // return barChartData(selectedSection);
+    const analysis = historicalData
+      .sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
+      .flatMap(({ analyses: { sector_analyses }, session_date }) => {
+        const session = sector_analyses.map((an) => {
+          const [category, sector] = an.sector.split("-");
+          const date = moment(session_date).format("MM/DD");
+          const [sectorCategory] = category.split(" ");
+          return {
+            ...an,
+            sector: sector.trim(),
+            category: sectorCategory.toLowerCase(),
+            session_date: date,
+          };
+        });
+        return {
+          session_date: moment(session_date).toISOString(),
+          analysis: session.filter(
+            ({ category }) => category === selectedSection
+          ),
+        };
+      });
+    const currentAnalysis = analysis[0];
+    const standardData = {
+      labels: currentAnalysis.analysis.map((d) => d.sector),
+      datasets: [
+        {
+          label: selectedSection,
+          data: currentAnalysis.analysis.flatMap((d) => d.score),
+          backgroundColor: "#3B82F6",
+          borderRadius: 6,
+        },
+      ],
+    };
+    return { analysis, currentAnalysis: standardData };
+  }, [selectedSection, historicalData]);
 
-
-  console.log({ historicalData });
+  // console.log({ barchatInfo });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,7 +169,11 @@ export default function DetailedView() {
           >
             <h3 className="text-lg font-semibold mb-4">Current Ratings</h3>
             <div className="h-[400px]">
-              <Bar data={barchatInfo} options={barChartOptions} />
+              <Bar
+                data={barchatInfo.currentAnalysis}
+                options={barChartOptions}
+                className="h-full"
+              />
             </div>
           </motion.div>
 
@@ -94,11 +184,12 @@ export default function DetailedView() {
             className="bg-white rounded-lg shadow-lg p-6"
           >
             <div className="relative">
-              {getSectorGraphs({
+              {GetSectorGraphs({
                 sectors,
                 currentGraphIndex,
                 historicalData,
                 lineChartOptions,
+                data: barchatInfo.analysis,
               })}
               <div className="absolute top-1/2 -left-4 transform -translate-y-1/2">
                 <button

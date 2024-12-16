@@ -58,19 +58,12 @@ function Layout({ children }) {
   }
 
   return (
-    // <div>
-    //   <h1>Dashboard Layout</h1>
-    //   {showSessionWarning && (
-    //     <div style={{ color: "red", fontWeight: "bold", marginTop: "20px" }}>
-    //       Warning: Your session is about to expire in less than 5 minutes!
-    //     </div>
-    //   )}
-    //   <p>
-    //     Time left: {Math.floor(timeLeftToExpire / 60)} minutes{" "}
-    //     {timeLeftToExpire % 60} seconds
-    //   </p>
-    // </div>
-    <DashboardProvider>{children}</DashboardProvider>
+
+    <DashboardProvider>
+
+        {children}
+
+    </DashboardProvider>
   );
 }
 

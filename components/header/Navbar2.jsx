@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../../store/AuthContext";
 import LogoutButton from "../reusables/LogoutButton";
 import MaxWidth from "../max-width";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,9 +80,14 @@ const Navbar = () => {
     <nav className="fixed w-full z-[999999] bg-white shadow-sm shadow-gray-400 px-6 py-5 font-poppins h-12 flex items-center">
       <MaxWidth className=" flex justify-between items-center w-full">
         <div>
-          <h1 className="font-bold text-xs sm:text-sm md:text-md text-blue-600">
-            NDC Capacity Scorecard
-          </h1>
+        <Link 
+        href="/" 
+        className="block"
+      >
+        <h1 className="font-bold text-xs sm:text-sm md:text-md text-blue-600">
+          NDC Capacity Scorecard
+        </h1>
+      </Link>
         </div>
 
         <div className="flex gap-4 items-center">

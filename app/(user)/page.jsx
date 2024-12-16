@@ -9,7 +9,7 @@ import HeroSection from '@/components/home/Hero';
 import TestimonialCarousel from '@/components/home/TestimonialCarousel';
 import CTABanner from '@/components/home/CTABanner';
 
-const carouselData = [
+const carouselData = [ 
   {
     id: 'ndcs-overview',
     title: "What are NDCs?",

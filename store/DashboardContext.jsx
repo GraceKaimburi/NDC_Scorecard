@@ -4,11 +4,13 @@ import useDashboardFetch from "@/hooks/use-dashboard-fetch";
 import useFetch from "@/hooks/useFetch";
 import { calculateSectorScore } from "@/utils/calculate-sector-scores";
 import { isResponseOk } from "@/utils/is-response-ok";
+import { numberToRating } from "@/utils/numberToRating";
 import { ratingToNumber } from "@/utils/ratingToNumber";
 import { ChartBar } from "lucide-react";
 import { ClipboardList } from "lucide-react";
 import { Settings } from "lucide-react";
 import { Activity } from "lucide-react";
+
 import React, {
   createContext,
   useCallback,
@@ -51,6 +53,7 @@ const DashboardProvider = ({ children }) => {
   const [savedSessions, setSavedSessions] = useState([]);
   const [showSavedSessions, setShowSavedSessions] = useState(false);
   const [historicalData, setHistoricalData] = useState([]);
+  const [sectorResponseAnswers, setSectorResponseAnswers] = useState({});
   // const detailedData = getDetailedData(type);
 
   const sectors = [
@@ -81,6 +84,48 @@ const DashboardProvider = ({ children }) => {
     governance: "No Data",
     monitoring: "No Data",
   });
+  const cumulativeData = [
+    {
+      category: "Finance",
+      value:
+        ratingToNumber(implementationData.finance) +
+        ratingToNumber(developmentData.finance),
+      displayRating: numberToRating(
+        ratingToNumber(implementationData.finance) +
+          ratingToNumber(developmentData.finance)
+      ),
+    },
+    {
+      category: "Technical",
+      value:
+        ratingToNumber(implementationData.technical) +
+        ratingToNumber(developmentData.technical),
+      displayRating: numberToRating(
+        ratingToNumber(implementationData.technical) +
+          ratingToNumber(developmentData.technical)
+      ),
+    },
+    {
+      category: "Governance",
+      value:
+        ratingToNumber(implementationData.governance) +
+        ratingToNumber(developmentData.governance),
+      displayRating: numberToRating(
+        ratingToNumber(implementationData.governance) +
+          ratingToNumber(developmentData.governance)
+      ),
+    },
+    {
+      category: "M&E",
+      value:
+        ratingToNumber(implementationData.monitoring) +
+        ratingToNumber(developmentData.monitoring),
+      displayRating: numberToRating(
+        ratingToNumber(implementationData.monitoring) +
+          ratingToNumber(developmentData.monitoring)
+      ),
+    },
+  ];
 
   // Chart configurations
   const lineChartOptions = {
@@ -266,10 +311,10 @@ const DashboardProvider = ({ children }) => {
             someAnswered,
           };
         })
-        .reduce((acc, {sec,...rest}) => {
+        .reduce((acc, { sec, ...rest }) => {
           acc[sec] = rest;
           return acc;
-        },/** @type {QuestionAnswerAnalysisPreCheckType}*/({}));
+        }, /** @type {QuestionAnswerAnalysisPreCheckType}*/ ({}));
 
       return sectorQuestions;
     },
@@ -280,23 +325,23 @@ const DashboardProvider = ({ children }) => {
       const ans = Object.values(questionAnswerCheck);
       const howManyAreAnswered = ans.filter((a) => a.allReqAnswered).length;
       const totalSectors = sectors.length;
-      
+
       const areAllAnswered = howManyAreAnswered === totalSectors;
 
       // return ans//.some((a) => !a.allAnswered) ? "PartialStop" : "Stop";
       return {
-        status:/**@type {const} */ (areAllAnswered ? "Stop" : "PartialStop"),
+        status: /**@type {const} */ (areAllAnswered ? "Stop" : "PartialStop"),
         howManyAreAnswered,
-        totalSectors
-      }
+        totalSectors,
+      };
     },
-    [questionAnswerCheck,answers]
+    [questionAnswerCheck, answers]
   );
 
   const resumableSessions = useMemo(
     function () {
-      const onPause = sessionData.filter(
-        (session) => ["Pause",'PartialStop'].includes(session.session_status)
+      const onPause = sessionData.filter((session) =>
+        ["Pause", "PartialStop"].includes(session.session_status)
       );
       const pendingStart = sessionData.filter(
         (session) => session.session_status === "Start"
@@ -399,7 +444,10 @@ const DashboardProvider = ({ children }) => {
         return;
       }
 
-      await updateSessionStatus(sessionId, currentUpdatableSessionStatus.status);
+      await updateSessionStatus(
+        sessionId,
+        currentUpdatableSessionStatus.status
+      );
 
       const formattedAnswers = Object.entries(answers)
         .map(([question_id, details]) => ({
@@ -410,7 +458,7 @@ const DashboardProvider = ({ children }) => {
         .map(({ uploaded_file, ...rest }) =>
           uploaded_file ? { ...rest, uploaded_file } : rest
         );
-
+      /**@type {import("axios").AxiosResponse<import("@/types").SubmitSectorQuizResponseType,>} */
       const response = await privateAPI.post(
         `/api/session/${sessionId}/responses/`,
         {
@@ -419,6 +467,7 @@ const DashboardProvider = ({ children }) => {
           answers: formattedAnswers,
         }
       );
+      const data = response.data;
 
       if (!isResponseOk(response)) throw new Error("Failed to submit answers");
 
@@ -475,9 +524,56 @@ const DashboardProvider = ({ children }) => {
           sectorQuestions
         ),
       };
+      const sampleSectorsReduced = sectors.reduce((ac, curr) => {
+        ac[curr] = {
+          score: "No Data",
+          label: "No Data",
+        };
+        return ac;
+      }, {});
+      const formulated = {
+        implementation: sampleSectorsReduced,
+        development: sampleSectorsReduced,
+      };
+      // console.log({ formulated });
 
-      setImplementationData(newImplementationData);
-      setDevelopmentData(newDevelopmentData);
+      Object.keys(formulated).forEach((key) => {
+        const { sector_analyses, overall_sector_scores } =
+          data.session.analyses;
+        sector_analyses.forEach((sec) => {
+          // console.log({key,sec});
+
+          const [category, sector] = sec.sector.split(" - ");
+          const sectorCategory = category.split(" ")[0].toLowerCase();
+          if (sectorCategory.includes(key)) {
+            let Obj = {
+              score: sec.score,
+              label: sec.label,
+							sector: sector,
+            };
+            const existingRecommendation = overall_sector_scores.find(
+              (sec_) => sec_.sector.toLowerCase() === sector.toLowerCase()
+            );
+            // console.log({
+            //   doesSectorHaveRecomendation: existingRecommendation,
+            //   overall_sector_scores,
+            //   sec,
+            // });
+
+            if (existingRecommendation) {
+              Obj["recommendation"] = existingRecommendation.recommendations;
+            }
+            // formulated[key][sector] =
+            Object.assign(formulated[key], { [sector]: Obj });
+          }
+        });
+      });
+
+      // console.log({ formulated });
+
+      // setImplementationData(newImplementationData);
+      // setDevelopmentData(newDevelopmentData);
+      setSectorResponseAnswers(formulated);
       setShowModal(false);
       setShowResults(true);
     } catch (error) {
@@ -603,23 +699,23 @@ const DashboardProvider = ({ children }) => {
         },
         {
           Financial: {
-            implementation: { score: "No Data", label: "Good" },
-            development: { score: "No Data", label: "Good" },
+            implementation: { score: "No Data", label: "No Data" },
+            development: { score: "No Data", label: "No Data" },
             Icon: ChartBar,
           },
           Technical: {
-            implementation: { score: "No Data", label: "Good" },
-            development: { score: "No Data", label: "Good" },
+            implementation: { score: "No Data", label: "No Data" },
+            development: { score: "No Data", label: "No Data" },
             Icon: Settings,
           },
           Governance: {
-            implementation: { score: "No Data", label: "Good" },
-            development: { score: "No Data", label: "Good" },
+            implementation: { score: "No Data", label: "No Data" },
+            development: { score: "No Data", label: "No Data" },
             Icon: ClipboardList,
           },
           "Monitoring and Evaluation": {
-            implementation: { score: "No Data", label: "Good" },
-            development: { score: "No Data", label: "Good" },
+            implementation: { score: "No Data", label: "No Data" },
+            development: { score: "No Data", label: "No Data" },
             Icon: Activity,
           },
         }
@@ -749,7 +845,10 @@ const DashboardProvider = ({ children }) => {
     setHistoricalData,
     handleSectorChange,
     questionAnswerCheck,
-    currentUpdatableSessionStatus
+    currentUpdatableSessionStatus,
+    cumulativeData,
+    sectorResponseAnswers,
+    setSectorResponseAnswers,
   };
   return (
     <DashboardContext.Provider value={state}>

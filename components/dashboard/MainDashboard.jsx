@@ -12,6 +12,7 @@ import { Bar } from "react-chartjs-2";
 import { RecommendationSection } from "@/app/(user)/dashboard/RecommendationSection";
 import { ratingToNumber } from "@/utils/ratingToNumber";
 import { numberToRating } from "@/utils/numberToRating";
+import { getCategoryIcon } from "./getCategoryIcon";
 
 export const MainDashboard = () => {
   const { privateAPI } = useFetch();
@@ -160,40 +161,103 @@ export const MainDashboard = () => {
             <Bar data={chartData} options={dashboardChartOptions} />
           </div>
         </motion.div>
-        <div className="grid grid-rows-2 gap-2">
-          {Object.entries(structuredData).map(([parentKey, parentValue]) => (
+        {Object.keys(structuredData).length < 1 ? (
+          <div className="grid grid-rows-2 gap-2">
             <motion.div
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              key={parentKey}
               onClick={() => setSelectedSection("implementation")}
               className="bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
             >
-              <h3 className="text-xl font-bold mb-4">
-                {capitalize(parentKey)} Capacity 
-              </h3>
+              <h3 className="text-xl font-bold mb-4">Implementation</h3>
               <div className="grid grid-cols-2 gap-2">
-                {Object.entries(parentValue).map(([key, objVal], index) => (
+                {Object.entries(implementationData).map(
+                  ([key, value], index) => (
+                    <motion.div
+                      key={key}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className="flex items-center gap-2"
+                    >
+                      {getCategoryIcon(key)}
+                      <p className={`text-sm ${getRatingColor(value)}`}>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                      </p>
+                    </motion.div>
+                  )
+                )}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setSelectedSection("development")}
+              className="bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+            >
+              <h3 className="text-xl font-bold mb-4">Development</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {Object.entries(developmentData).map(([key, value], index) => (
                   <motion.div
                     key={key}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
                     className="flex items-center gap-2"
                   >
-                    <objVal.Icon className="w-5 h-5" />
-                    <p className={`text-sm ${getRatingColor(objVal.label)}`}>
-                      {capitalize(key)}: {objVal.score}
+                    {getCategoryIcon(key)}
+                    <p className={`text-sm ${getRatingColor(value)}`}>
+                      {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
                     </p>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="grid grid-rows-2 gap-2">
+           
+            {Object.entries(structuredData).map(([parentKey, parentValue]) => (
+              <motion.div
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                key={parentKey}
+                onClick={() => setSelectedSection(parentKey)}
+                className="bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+              >
+                <h3 className="text-xl font-bold mb-4">
+                  {capitalize(parentKey)} Capacity
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(parentValue).map(([key, objVal], index) => (
+                    <motion.div
+                      key={key}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <objVal.Icon className="w-5 h-5" />
+                      <p className={`text-sm ${getRatingColor(objVal.label)}`}>
+                        {capitalize(key)}: {objVal.score}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
         <RecommendationSection className={"col-span-2"} />
       </motion.div>
     </AuthMiddleware>

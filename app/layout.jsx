@@ -4,7 +4,6 @@ import { AuthProvider } from "@/store/AuthContext";
 import Footer from "@/components/reusables/Footer";
 import NavRenderer from "@/components/header/NavRenderer";
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -20,7 +19,7 @@ export const metadata = {
   title: "NDC Capacity Scorecard",
   description: "Nationally Determined Contributions (NDCs) Scorecard",
   icons: {
-    icon: '/favicon.ico', // Assuming your favicon.ico is in the public folder
+    icon: "/favicon.ico", // Assuming your favicon.ico is in the public folder
   },
 };
 
@@ -31,11 +30,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-        <NavRenderer />
-        <section className="pt-12">
-          {children}
-        </section>
-        <Footer />
+          <NavRenderer />
+          <section className="pt-12">{children}</section>
+          <Footer />
         </AuthProvider>
       </body>
     </html>
