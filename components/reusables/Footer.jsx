@@ -122,7 +122,7 @@ import {
                   <img
                     src="/images/agnes.jpeg"
                     alt="AGNES"
-                    className="h-20 w-auto"
+                    className="h-20 w-60"
                   />
                 </a>
                 <a
@@ -132,9 +132,9 @@ import {
                   className="block hover:opacity-80 transition-opacity"
                 >
                   <img
-                    src="/images/iwmi.jpeg"
+                    src="/images/iwmi-logo.jpeg"
                     alt="IWMI"
-                    className="h-20 w-auto"
+                    className="h-20 w-60"
                   />
                 </a>
               </div>
