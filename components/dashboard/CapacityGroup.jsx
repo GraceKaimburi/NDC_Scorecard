@@ -14,7 +14,7 @@ export default function CapacityGroup() {
 		currentSectorCategory,
 	} = useDashboardData();
 	return Object.keys(structuredData).length < 1 ? (
-		<div className="grid grid-rows-2 gap-2">
+		currentSectorCategory === "implementation" ? (
 			<motion.div
 				initial={{ x: 20, opacity: 0 }}
 				animate={{ x: 0, opacity: 1 }}
@@ -36,13 +36,13 @@ export default function CapacityGroup() {
 						>
 							{getCategoryIcon(key)}
 							<p className={`text-sm ${getRatingColor(value)}`}>
-								{capitalize(key)}: {value}z
+								{capitalize(key)}: {value}
 							</p>
 						</motion.div>
 					))}
 				</div>
 			</motion.div>
-
+		) : (
 			<motion.div
 				initial={{ x: 20, opacity: 0 }}
 				animate={{ x: 0, opacity: 1 }}
@@ -72,7 +72,7 @@ export default function CapacityGroup() {
 					))}
 				</div>
 			</motion.div>
-		</div>
+		)
 	) : (
 		<div className="grid grid-rows-1 gap-2 p-4 bg-white  rounded-lg shadow-lg  cursor-pointer hover:shadow-xl transition-shadow">
 			{Object.entries(structuredData).map(
@@ -102,7 +102,6 @@ export default function CapacityGroup() {
 									>
 										<objVal.Icon className="w-5 h-5" />
 										<p className={`text-sm ${getRatingColor(objVal.label)}`}>
-											{/* {capitalize(key)}: {objVal.score} */}
 											{capitalize(key)}: {objVal.score}
 										</p>
 									</motion.div>
